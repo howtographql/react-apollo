@@ -1,0 +1,21 @@
+{
+  "name": "hackernews",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-scripts": "1.0.7"
+  },
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-apollo": "^1.4.2",
+    "react-dom": "^15.5.4",
+    "react-router-dom": "^4.1.1",
+    "subscriptions-transport-ws": "0.6.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
