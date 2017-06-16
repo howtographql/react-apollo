@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { gql, graphql } from 'react-apollo'
 import Link from './Link'
-import { GC_USER_ID } from '../constants'
+import { GC_USER_ID, GC_AUTH_TOKEN, LINKS_PER_PAGE } from '../constants'
 
-const LINKS_PER_PAGE = 2
 
 class LinkList extends Component {
 
@@ -13,33 +12,60 @@ class LinkList extends Component {
   }
 
   render() {
-    if (this.props.allLinksQuery.loading) {
+
+    if (this.props.allLinksQuery && this.props.allLinksQuery.loading) {
       return <div>Loading</div>
     }
+
+    if (this.props.allLinksQuery && this.props.allLinksQuery.error) {
+      return <div>Error</div>
+    }
+
+    const isNewPage = this.props.location.pathname.includes('new')
+    const linksToRender = this._getLinksToRender(isNewPage)
     const userId = localStorage.getItem(GC_USER_ID)
+
     return (
       <div>
         {!userId ?
           <button onClick={() => {
-            const { history } = this.props
-            history.push('/login')
+            this.props.history.push('/login')
           }}>Login</button> :
-          <button onClick={() => {
-            const { history } = this.props
-            history.push('/create')
-          }}>New Post</button>
+          <div>
+            <button onClick={() => {
+              this.props.history.push('/create')
+            }}>New Post</button>
+            <button onClick={() => {
+              localStorage.removeItem(GC_USER_ID)
+              localStorage.removeItem(GC_AUTH_TOKEN)
+              this.forceUpdate()
+              {/*this.setState({})*/}
+            }}>Logout</button>
+          </div>
         }
         <div>
-          {this.props.allLinksQuery.allLinks.map(link => (
+          {linksToRender.map(link => (
             <Link key={link.id} updateStoreAfterVote={this._updateCacheAfterVote} link={link}/>
           ))}
         </div>
+        {isNewPage &&
         <div>
-          <button onClick={() => this._previousPage()}>previous</button>
-          <button onClick={() => this._nextPage()}>next</button>
+          <button onClick={() => this._previousPage()}>Previous</button>
+          <button onClick={() => this._nextPage()}>Next</button>
         </div>
+        }
       </div>
     )
+
+  }
+
+  _getLinksToRender = (isNewPage) => {
+    if (isNewPage) {
+      return this.props.allLinksQuery.allLinks
+    }
+    const rankedLinks = this.props.allLinksQuery.allLinks.slice()
+    rankedLinks.sort((l1, l2) => l2.votes.length - l1.votes.length)
+    return rankedLinks
   }
 
   _subscribeToNewLinks = () => {
@@ -66,15 +92,23 @@ class LinkList extends Component {
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-        const newAllLinks = [
-          subscriptionData.data.Link.node,
-          ...previous.allLinks
-        ]
-        const result = {
-          ...previous,
-          allLinks: newAllLinks
+        const isNewPage = this.props.location.pathname.includes('new')
+        const page = parseInt(this.props.match.params.page, 10)
+        const isFirstPage = page === 1
+
+        if (isNewPage && isFirstPage) {
+          const newAllLinks = [
+            subscriptionData.data.Link.node,
+            ...previous.allLinks
+          ]
+          newAllLinks.pop()
+          const result = {
+            ...previous,
+            allLinks: newAllLinks
+          }
+          return result
         }
-        return result
+       return previous
       }
     })
   }
@@ -115,35 +149,34 @@ class LinkList extends Component {
           allLinks: newAllLinks
         }
         return result
-        // return Immutable.setIn(previous, ['allItems', 0], link)
       }
     })
   }
 
   _nextPage = () => {
-    const { history } = this.props
-    const page = this.props.match.params.page
+    const page = parseInt(this.props.match.params.page, 10)
     if (page <= this.props.allLinksQuery._allLinksMeta.count / LINKS_PER_PAGE) {
-      const nextPage = parseInt(page) + 1
-      history.push(`/${nextPage}`)
+      const nextPage = page + 1
+      this.props.history.push(`/new/${nextPage}`)
     }
   }
 
   _previousPage = () => {
-    const { history } = this.props
-    const page = this.props.match.params.page
+    const page = parseInt(this.props.match.params.page, 10)
     if (page > 1) {
-      const nextPage = parseInt(page) - 1
-      history.push(`/${nextPage}`)
+      const nextPage = page - 1
+      this.props.history.push(`/new/${nextPage}`)
     }
   }
 
   _updateCacheAfterVote = (store, createVote, linkId) => {
-    const { pathname } = this.props.location
-    const page = parseInt(pathname.substring(1, pathname.length))
-    const skip = (page - 1) * LINKS_PER_PAGE
-    const first = LINKS_PER_PAGE
-    const data = store.readQuery({ query: ALL_LINKS_QUERY, variables: { first, skip } })
+    const isNewPage = this.props.location.pathname.includes('new')
+    const page = parseInt(this.props.match.params.page, 10)
+    const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
+    const first = isNewPage ? LINKS_PER_PAGE : 100
+    const orderBy = isNewPage ? "createdAt_DESC" : null
+    const data = store.readQuery({ query: ALL_LINKS_QUERY, variables: { first, skip, orderBy } })
+
     const votedLink = data.allLinks.find(link => link.id === linkId)
     votedLink.votes = createVote.link.votes
     store.writeQuery({ query: ALL_LINKS_QUERY, data })
@@ -151,13 +184,13 @@ class LinkList extends Component {
 
 }
 
-const ALL_LINKS_QUERY = gql`
-  query AllLinksQuery($first: Int, $skip: Int) {
-    allLinks(first: $first, skip: $skip) {
+export const ALL_LINKS_QUERY = gql`
+  query AllLinksQuery($first: Int, $skip: Int, $orderBy: LinkOrderBy) {
+    allLinks(first: $first, skip: $skip, orderBy: $orderBy) {
       id
+      createdAt
       url
       description
-      createdAt
       postedBy {
         id
         name
@@ -175,14 +208,14 @@ const ALL_LINKS_QUERY = gql`
 export default graphql(ALL_LINKS_QUERY, {
   name: 'allLinksQuery',
   options: (ownProps) => {
-    const { pathname } = ownProps.location
-    const page = parseInt(pathname.substring(1, pathname.length))
+    const page = parseInt(ownProps.match.params.page, 10)
+    const isNewPage = ownProps.location.pathname.includes('new')
+    const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
+    const first = isNewPage ? LINKS_PER_PAGE : 100
+    const orderBy = isNewPage ? "createdAt_DESC" : null
     return {
-      variables: {
-        skip: (page - 1) * LINKS_PER_PAGE,
-        first: LINKS_PER_PAGE
-      },
-      fetchPolicy: 'network-only'
+      variables: { first, skip, orderBy },
+      fetchPolicy: 'cache-and-network'
     }
   }
 }) (LinkList)

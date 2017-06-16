@@ -7,6 +7,7 @@ class Link extends Component {
   render() {
 
     const userId = localStorage.getItem(GC_USER_ID)
+    console.log(`Link - userId:`, userId)
     return (
       <div>
         {userId && <div onClick={() => this._voteForLink()}>▲</div>}
