@@ -38,8 +38,7 @@ class LinkList extends Component {
             <button onClick={() => {
               localStorage.removeItem(GC_USER_ID)
               localStorage.removeItem(GC_AUTH_TOKEN)
-              this.forceUpdate()
-              {/*this.setState({})*/}
+              this.forceUpdate() // doesn't work as it should :(
             }}>Logout</button>
           </div>
         }
@@ -133,7 +132,13 @@ class LinkList extends Component {
                 }
                 votes {
                   id
+                  user {
+                    id
+                  }
                 }
+              }
+              user {
+                id
               }
             }
           }
@@ -197,6 +202,9 @@ export const ALL_LINKS_QUERY = gql`
       }
       votes {
         id
+        user {
+          id
+        }
       }
     }
     _allLinksMeta {

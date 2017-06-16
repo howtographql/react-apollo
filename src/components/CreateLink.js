@@ -52,11 +52,9 @@ class CreateLink extends Component {
         postedById
       },
       update: (store, { data: { createLink } }) => {
-
         const first = LINKS_PER_PAGE
         const skip = 0
-        const orderBy = "createdAt_DESC"
-
+        const orderBy = 'createdAt_DESC'
         const data = store.readQuery({
           query: ALL_LINKS_QUERY,
           variables: { first, skip, orderBy }
@@ -92,6 +90,9 @@ const CREATE_LINK_MUTATION = gql`
       }
       votes {
         id
+        user {
+          id
+        }
       }
     }
   }

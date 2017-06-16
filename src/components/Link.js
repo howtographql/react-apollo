@@ -7,7 +7,6 @@ class Link extends Component {
   render() {
 
     const userId = localStorage.getItem(GC_USER_ID)
-    console.log(`Link - userId:`, userId)
     return (
       <div>
         {userId && <div onClick={() => this._voteForLink()}>▲</div>}
@@ -18,8 +17,14 @@ class Link extends Component {
   }
 
   _voteForLink = async () => {
-    const linkId = this.props.link.id
     const userId = localStorage.getItem(GC_USER_ID)
+    const voterIds = this.props.link.votes.map(vote => vote.user.id)
+    if (voterIds.includes(userId)) {
+      console.log(`User (${userId}) already voted for this link.`)
+      return
+    }
+
+    const linkId = this.props.link.id
     await this.props.createVoteMutation({
       variables: {
         userId,
@@ -40,7 +45,13 @@ const CREATE_VOTE_MUTATION = gql`
       link {
         votes {
           id
+          user {
+            id
+          }
         }
+      }
+      user {
+        id
       }
     }
   }
