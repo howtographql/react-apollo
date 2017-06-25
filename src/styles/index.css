@@ -1,19 +1,15 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: Verdana, Geneva, sans-serif;
 }
 
-Link {
-  color: black;
+input {
+  max-width: 500px;
 }
 
 .gray {
   color: #828282;
-}
-
-.f11 {
-  font-size: 11px;
 }
 
 .orange {
@@ -22,6 +18,10 @@ Link {
 
 .background-gray {
   background-color: rgb(246,246,239);
+}
+
+.f11 {
+  font-size: 11px;
 }
 
 .w85 {
@@ -41,8 +41,3 @@ Link {
   cursor: pointer;
   max-width: 250px;
 }
-
-input {
-  max-width: 500px;
-}
-
