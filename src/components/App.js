@@ -13,7 +13,7 @@ class App extends Component {
     return (
     <div className='center w85'>
       <Header />
-      <div className='ph3 pv1'>
+      <div className='ph3 pv1 background-gray'>
         <Switch>
             <Route exact path='/' render={() => <Redirect to='/new/1' />} />
             <Route exact path='/login' component={Login}/>
