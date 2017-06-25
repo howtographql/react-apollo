@@ -10,22 +10,20 @@ class Search extends Component {
   }
 
   render() {
-    const { links } = this.state
     return (
-      <div>
-        <div>
-          Search
+      <div className='mv3'>
+        <div className='flex'>
           <input
             type='text'
             onChange={(e) => this.setState({ searchText: e.target.value })}
           />
-          <button
+          <div className='button ml2'
             onClick={() => this._executeSearch()}
           >
-            OK
-          </button>
+            search
+          </div>
         </div>
-        {links.map(link => <Link key={link.id} link={link}/>)}
+        {this.state.links.map((link, index) => <Link key={link.id} index={index} link={link}/>)}
       </div>
     )
   }
@@ -61,6 +59,9 @@ const ALL_LINKS_SEARCH_QUERY = gql`
       }
       votes {
         id
+        user {
+          id
+        }
       }
     }
   }

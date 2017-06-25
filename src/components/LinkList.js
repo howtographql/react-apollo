@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
-import { gql, graphql } from 'react-apollo'
 import Link from './Link'
-import { GC_USER_ID, GC_AUTH_TOKEN, LINKS_PER_PAGE } from '../constants'
-
+import { graphql, gql } from 'react-apollo'
+import { LINKS_PER_PAGE } from '../constants'
 
 class LinkList extends Component {
 
   componentDidMount() {
-    this._subscribeToNewVotes()
     this._subscribeToNewLinks()
+    this._subscribeToNewVotes()
   }
 
   render() {
@@ -23,39 +22,31 @@ class LinkList extends Component {
 
     const isNewPage = this.props.location.pathname.includes('new')
     const linksToRender = this._getLinksToRender(isNewPage)
-    const userId = localStorage.getItem(GC_USER_ID)
+    const page = parseInt(this.props.match.params.page, 10)
 
     return (
       <div>
-        {!userId ?
-          <button onClick={() => {
-            this.props.history.push('/login')
-          }}>Login</button> :
-          <div>
-            <button onClick={() => {
-              this.props.history.push('/create')
-            }}>New Post</button>
-            <button onClick={() => {
-              localStorage.removeItem(GC_USER_ID)
-              localStorage.removeItem(GC_AUTH_TOKEN)
-              this.forceUpdate() // doesn't work as it should :(
-            }}>Logout</button>
-          </div>
-        }
         <div>
-          {linksToRender.map(link => (
-            <Link key={link.id} updateStoreAfterVote={this._updateCacheAfterVote} link={link}/>
+          {linksToRender.map((link, index) => (
+            <Link key={link.id} index={page ? (page - 1) * LINKS_PER_PAGE + index : index} updateStoreAfterVote={this._updateCacheAfterVote} link={link}/>
           ))}
         </div>
         {isNewPage &&
-        <div>
-          <button onClick={() => this._previousPage()}>Previous</button>
-          <button onClick={() => this._nextPage()}>Next</button>
+        <div className='flex ml4 mv3 gray'>
+          <div className='pointer mr2' onClick={() => this._previousPage()}>Previous</div>
+          <div className='pointer' onClick={() => this._nextPage()}>Next</div>
         </div>
         }
       </div>
     )
 
+  }
+
+  _updateCacheAfterVote = (store, createVote, linkId) => {
+    const data = store.readQuery({ query: ALL_LINKS_QUERY })
+    const votedLink = data.allLinks.find(link => link.id === linkId)
+    votedLink.votes = createVote.link.votes
+    store.writeQuery({ query: ALL_LINKS_QUERY, data })
   }
 
   _getLinksToRender = (isNewPage) => {
@@ -85,29 +76,24 @@ class LinkList extends Component {
               }
               votes {
                 id
+                user {
+                  id
+                }
               }
             }
           }
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-        const isNewPage = this.props.location.pathname.includes('new')
-        const page = parseInt(this.props.match.params.page, 10)
-        const isFirstPage = page === 1
-
-        if (isNewPage && isFirstPage) {
-          const newAllLinks = [
-            subscriptionData.data.Link.node,
-            ...previous.allLinks
-          ]
-          newAllLinks.pop()
-          const result = {
-            ...previous,
-            allLinks: newAllLinks
-          }
-          return result
+        const newAllLinks = [
+          subscriptionData.data.Link.node,
+          ...previous.allLinks
+        ]
+        const result = {
+          ...previous,
+          allLinks: newAllLinks
         }
-       return previous
+        return result
       }
     })
   }
@@ -178,8 +164,9 @@ class LinkList extends Component {
     const isNewPage = this.props.location.pathname.includes('new')
     const page = parseInt(this.props.match.params.page, 10)
     const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
-    const first = isNewPage ? LINKS_PER_PAGE : 100
-    const orderBy = isNewPage ? "createdAt_DESC" : null
+    const first = isNewPage ? LINKS_PER_PAGE : 10
+    const orderBy = isNewPage ? 'createdAt_DESC' : null
+
     const data = store.readQuery({ query: ALL_LINKS_QUERY, variables: { first, skip, orderBy } })
 
     const votedLink = data.allLinks.find(link => link.id === linkId)
@@ -188,6 +175,7 @@ class LinkList extends Component {
   }
 
 }
+
 
 export const ALL_LINKS_QUERY = gql`
   query AllLinksQuery($first: Int, $skip: Int, $orderBy: LinkOrderBy) {
@@ -220,10 +208,9 @@ export default graphql(ALL_LINKS_QUERY, {
     const isNewPage = ownProps.location.pathname.includes('new')
     const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
     const first = isNewPage ? LINKS_PER_PAGE : 100
-    const orderBy = isNewPage ? "createdAt_DESC" : null
+    const orderBy = isNewPage ? 'createdAt_DESC' : null
     return {
-      variables: { first, skip, orderBy },
-      fetchPolicy: 'cache-and-network'
+      variables: { first, skip, orderBy }
     }
   }
 }) (LinkList)

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { gql, graphql, compose } from 'react-apollo'
 import { GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
+import { gql, graphql, compose } from 'react-apollo'
 
 class Login extends Component {
 
@@ -15,8 +15,8 @@ class Login extends Component {
 
     return (
       <div>
-        <div>{this.state.login ? 'Login' : 'Sign Up'}</div>
-        <div>
+        <h4 className='mv3'>{this.state.login ? 'Login' : 'Sign Up'}</h4>
+        <div className='flex flex-column'>
           {!this.state.login &&
           <input
             value={this.state.name}
@@ -37,16 +37,20 @@ class Login extends Component {
             placeholder='Choose a safe password'
           />
         </div>
-        <button
-          onClick={() => this._confirm()}
-        >
-          {this.state.login ? 'Login' : 'Create Account' }
-        </button>
-        <button
-          onClick={() => this.setState({ login: !this.state.login })}
-        >
-          {this.state.login ? 'Need to create an account?' : 'Already have an account?'}
-        </button>
+        <div className='flex mt3'>
+          <div
+            className='pointer mr2 button'
+            onClick={() => this._confirm()}
+          >
+            {this.state.login ? 'login' : 'create Account' }
+          </div>
+          <div
+            className='pointer button'
+            onClick={() => this.setState({ login: !this.state.login })}
+          >
+            {this.state.login ? 'need to create an account?' : 'already have an account?'}
+          </div>
+        </div>
       </div>
     )
   }
@@ -75,8 +79,7 @@ class Login extends Component {
       const token = result.data.signinUser.token
       this._saveUserData(id, token)
     }
-    const { history } = this.props
-    history.push(`/`)
+    this.props.history.push(`/`)
   }
 
   _saveUserData = (id, token) => {
@@ -125,7 +128,6 @@ const SIGNIN_USER_MUTATION = gql`
     }
   }
 `
-
 
 export default compose(
   graphql(CREATE_USER_MUTATION, { name: 'createUserMutation' }),
