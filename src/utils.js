@@ -1,41 +1,39 @@
-// shamelessly copied from:
-// http://stackoverflow.com/questions/6108819/javascript-timestamp-to-relative-time-eg-2-seconds-ago-one-week-ago-etc-best
 function timeDifference(current, previous) {
 
-  var msPerMinute = 60 * 1000;
-  var msPerHour = msPerMinute * 60;
-  var msPerDay = msPerHour * 24;
-  var msPerMonth = msPerDay * 30;
-  var msPerYear = msPerDay * 365;
+  const milliSecondsPerMinute = 60 * 1000
+  const milliSecondsPerHour = milliSecondsPerMinute * 60
+  const milliSecondsPerDay = milliSecondsPerHour * 24
+  const milliSecondsPerMonth = milliSecondsPerDay * 30
+  const milliSecondsPerYear = milliSecondsPerDay * 365
 
-  var elapsed = current - previous;
+  const elapsed = current - previous
 
-  if (elapsed < msPerMinute / 3) {
+  if (elapsed < milliSecondsPerMinute / 3) {
     return 'just now'
   }
 
-  if (elapsed < msPerMinute) {
+  if (elapsed < milliSecondsPerMinute) {
     return 'less than 1 min ago'
   }
 
-  else if (elapsed < msPerHour) {
-    return Math.round(elapsed/msPerMinute) + ' min ago';
+  else if (elapsed < milliSecondsPerHour) {
+    return Math.round(elapsed/milliSecondsPerMinute) + ' min ago'
   }
 
-  else if (elapsed < msPerDay ) {
-    return Math.round(elapsed/msPerHour ) + ' h ago';
+  else if (elapsed < milliSecondsPerDay ) {
+    return Math.round(elapsed/milliSecondsPerHour ) + ' h ago'
   }
 
-  else if (elapsed < msPerMonth) {
-    return Math.round(elapsed/msPerDay) + ' days ago';
+  else if (elapsed < milliSecondsPerMonth) {
+    return Math.round(elapsed/milliSecondsPerDay) + ' days ago'
   }
 
-  else if (elapsed < msPerYear) {
-    return Math.round(elapsed/msPerMonth) + ' mo ago';
+  else if (elapsed < milliSecondsPerYear) {
+    return Math.round(elapsed/milliSecondsPerMonth) + ' mo ago'
   }
 
   else {
-    return Math.round(elapsed/msPerYear ) + ' years ago';
+    return Math.round(elapsed/milliSecondsPerYear ) + ' years ago'
   }
 }
 
