@@ -10,7 +10,7 @@
     "react-apollo": "^1.4.2",
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.1.1",
-    "subscriptions-transport-ws": "^0.7.3"
+    "subscriptions-transport-ws": "^0.8.2"
   },
   "scripts": {
     "start": "react-scripts start",
