@@ -2,14 +2,12 @@
   "name": "hackernews-react-apollo",
   "version": "0.1.0",
   "private": true,
-  "devDependencies": {
-    "react-scripts": "1.0.7"
-  },
   "dependencies": {
     "react": "^15.6.1",
     "react-apollo": "^1.4.2",
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.1.1",
+    "react-scripts": "^1.0.14",
     "subscriptions-transport-ws": "^0.8.2"
   },
   "scripts": {
