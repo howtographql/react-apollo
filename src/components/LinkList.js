@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Link from './Link'
-import { graphql, gql } from 'react-apollo'
+import gql from 'graphql-tag'
+import { graphql } from 'react-apollo'
 import { LINKS_PER_PAGE } from '../constants'
 
 class LinkList extends Component {
