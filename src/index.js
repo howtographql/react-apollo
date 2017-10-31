@@ -12,7 +12,7 @@ const networkInterface = createNetworkInterface({
   uri: 'https://api.graph.cool/simple/v1/__SERVICE_ID__'
 })
 
-const wsClient = new SubscriptionClient('wss://subscriptions.graph.cool/v1/__SERVICE_ID__', {
+const wsClient = new SubscriptionClient('wss://subscriptions.graph.cool/v1/cj9fsdu4a2f5l0129rsk9m3rw', {
   reconnect: true,
   connectionParams: {
     authToken: localStorage.getItem(GC_AUTH_TOKEN),
