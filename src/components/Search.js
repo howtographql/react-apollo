@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { gql, withApollo } from 'react-apollo'
+import { withApollo } from 'react-apollo'
+import gql from 'graphql-tag'
 import Link from './Link'
 
 class Search extends Component {

@@ -3,40 +3,50 @@ import ReactDOM from 'react-dom'
 import App from './components/App'
 import registerServiceWorker from './registerServiceWorker'
 import './styles/index.css'
-import { ApolloProvider, createNetworkInterface, ApolloClient } from 'react-apollo'
+import { ApolloClient } from 'apollo-client'
+import { ApolloProvider } from 'react-apollo'
 import { BrowserRouter } from 'react-router-dom'
-import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws'
 import { GC_AUTH_TOKEN } from './constants'
+import { ApolloLink, split } from 'apollo-link'
+import { createHttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { WebSocketLink } from 'apollo-link-ws'
+import { getMainDefinition } from 'apollo-utilities'
 
-const networkInterface = createNetworkInterface({
-  uri: 'https://api.graph.cool/simple/v1/__SERVICE_ID__'
+const httpLink = createHttpLink({ uri: 'https://api.graph.cool/simple/v1/cj9gvy3ih0xkv0111bcc8sj1o' })
+
+const middlewareLink = new ApolloLink((operation, forward) => {
+  const token = localStorage.getItem(GC_AUTH_TOKEN)
+  const authorizationHeader = token ? `Bearer ${token}` : null
+  operation.setContext({
+    headers: {
+      authorization: authorizationHeader
+    }
+  })
+  return forward(operation)
 })
 
-const wsClient = new SubscriptionClient('wss://subscriptions.graph.cool/v1/cj9fsdu4a2f5l0129rsk9m3rw', {
-  reconnect: true,
-  connectionParams: {
-    authToken: localStorage.getItem(GC_AUTH_TOKEN),
+const httpLinkWithAuthToken = middlewareLink.concat(httpLink)
+
+const wsLink = new WebSocketLink({
+  uri: `wss://subscriptions.graph.cool/v1/cj9gvy3ih0xkv0111bcc8sj1o`,
+  options: {
+    reconnect: true
   }
 })
 
-const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
-  networkInterface,
-  wsClient
+const link = split(
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query)
+    return kind === 'OperationDefinition' && operation === 'subscription'
+  },
+  wsLink,
+  httpLinkWithAuthToken,
 )
 
-networkInterface.use([{
-  applyMiddleware(req, next) {
-    if (!req.options.headers) {
-      req.options.headers = {}
-    }
-    const token = localStorage.getItem(GC_AUTH_TOKEN)
-    req.options.headers.authorization = token ? `Bearer ${token}` : null
-    next()
-  }
-}])
-
 const client = new ApolloClient({
-  networkInterface: networkInterfaceWithSubscriptions
+  link,
+  cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
 })
 
 ReactDOM.render(

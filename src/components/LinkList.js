@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Link from './Link'
-import { graphql, gql } from 'react-apollo'
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
 import { LINKS_PER_PAGE } from '../constants'
 
 class LinkList extends Component {
@@ -42,7 +43,7 @@ class LinkList extends Component {
 
   }
   
-  _getLinksToRender = (isNewPage) => {
+  _getLinksToRender = isNewPage => {
     if (isNewPage) {
       return this.props.allLinksQuery.allLinks
     }
@@ -79,7 +80,7 @@ class LinkList extends Component {
       `,
       updateQuery: (previous, { subscriptionData }) => {
         const newAllLinks = [
-          subscriptionData.data.Link.node,
+          subscriptionData.Link.node,
           ...previous.allLinks
         ]
         const result = {
@@ -124,8 +125,8 @@ class LinkList extends Component {
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-        const votedLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Vote.node.link.id)
-        const link = subscriptionData.data.Vote.node.link
+        const votedLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.Vote.node.link.id)
+        const link = subscriptionData.Vote.node.link
         const newAllLinks = previous.allLinks.slice()
         newAllLinks[votedLinkIndex] = link
         const result = {
@@ -196,7 +197,7 @@ export const ALL_LINKS_QUERY = gql`
 
 export default graphql(ALL_LINKS_QUERY, {
   name: 'allLinksQuery',
-  options: (ownProps) => {
+  options: ownProps => {
     const page = parseInt(ownProps.match.params.page, 10)
     const isNewPage = ownProps.location.pathname.includes('new')
     const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
