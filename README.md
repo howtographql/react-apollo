@@ -37,6 +37,7 @@ Paste the service ID (which you find in the generated `.graphcoolrc` file inside
 ### 5. Install dependencies & run locally
 
 ```sh
+cd ..
 yarn install
 yarn start # open http://localhost:3000 in your browser
 ```
