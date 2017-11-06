@@ -12,19 +12,20 @@ class Search extends Component {
 
   render() {
     return (
-      <div className='mv3'>
-        <div className='flex'>
+      <div>
+        <div>
+          Search
           <input
             type='text'
             onChange={(e) => this.setState({ searchText: e.target.value })}
           />
-          <div className='button ml2'
+          <button
             onClick={() => this._executeSearch()}
           >
-            search
-          </div>
+            OK
+          </button>
         </div>
-        {this.state.links.map((link, index) => <Link key={link.id} index={index} link={link}/>)}
+        {this.state.links.map((link, index) => <Link key={link.id} link={link} index={index}/>)}
       </div>
     )
   }
@@ -38,7 +39,6 @@ class Search extends Component {
     const links = result.data.allLinks
     this.setState({ links })
   }
-
 }
 
 const ALL_LINKS_SEARCH_QUERY = gql`

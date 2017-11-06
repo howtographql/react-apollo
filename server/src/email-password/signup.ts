@@ -30,7 +30,7 @@ export default async (event: FunctionEvent<EventData>) => {
 
     // check if user exists already
     const userExists: boolean = await getUser(api, email)
-      .then(r => r.User !== null)
+        .then(r => r.User !== null)
     if (userExists) {
       return { error: 'Email already in use' }
     }
@@ -88,5 +88,5 @@ async function createGraphcoolUser(api: GraphQLClient, email: string, password: 
   }
 
   return api.request<{ createUser: User }>(mutation, variables)
-    .then(r => r.createUser.id)
+      .then(r => r.createUser.id)
 }

@@ -10,5 +10,5 @@ export declare type MergeInfo = {
 export default function mergeSchemas({schemas, onTypeConflict, resolvers}: {
     schemas: Array<GraphQLSchema | string>;
     onTypeConflict?: (leftType: GraphQLNamedType, rightType: GraphQLNamedType) => GraphQLNamedType;
-    resolvers: (mergeInfo: MergeInfo) => IResolvers;
+    resolvers?: (mergeInfo: MergeInfo) => IResolvers;
 }): GraphQLSchema;

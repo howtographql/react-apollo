@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { GC_USER_ID } from '../constants'
+import { timeDifferenceForDate } from '../utils'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { timeDifferenceForDate } from '../utils'
 
 class Link extends Component {
 

@@ -1,21 +1,23 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import './styles/index.css'
 import App from './components/App'
 import registerServiceWorker from './registerServiceWorker'
-import './styles/index.css'
-import { ApolloClient } from 'apollo-client'
-import { ApolloProvider } from 'react-apollo'
 import { BrowserRouter } from 'react-router-dom'
 import { GC_AUTH_TOKEN } from './constants'
-import { ApolloLink, split } from 'apollo-link'
-import { createHttpLink } from 'apollo-link-http'
+import { ApolloLink, split } from 'apollo-client-preset'
+import { ApolloProvider } from 'react-apollo'
+import { ApolloClient } from 'apollo-client'
+import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 
-const httpLink = createHttpLink({ uri: 'https://api.graph.cool/simple/v1/cj9gvy3ih0xkv0111bcc8sj1o' })
+const serviceId = '__SERVICE_ID__'
 
-const middlewareLink = new ApolloLink((operation, forward) => {
+const httpLink = new HttpLink({ uri: `https://api.graph.cool/simple/v1/${serviceId}` })
+
+const middlewareAuthLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem(GC_AUTH_TOKEN)
   const authorizationHeader = token ? `Bearer ${token}` : null
   operation.setContext({
@@ -26,12 +28,15 @@ const middlewareLink = new ApolloLink((operation, forward) => {
   return forward(operation)
 })
 
-const httpLinkWithAuthToken = middlewareLink.concat(httpLink)
+const httpLinkWithAuthToken = middlewareAuthLink.concat(httpLink)
 
 const wsLink = new WebSocketLink({
-  uri: `wss://subscriptions.graph.cool/v1/cj9gvy3ih0xkv0111bcc8sj1o`,
+  uri: `wss://subscriptions.graph.cool/v1/${serviceId}`,
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: {
+      authToken: localStorage.getItem(GC_AUTH_TOKEN),
+    },
   }
 })
 
@@ -46,7 +51,7 @@ const link = split(
 
 const client = new ApolloClient({
   link,
-  cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
+  cache: new InMemoryCache()
 })
 
 ReactDOM.render(

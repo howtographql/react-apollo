@@ -40,16 +40,44 @@ class LinkList extends Component {
         }
       </div>
     )
-
   }
-  
-  _getLinksToRender = isNewPage => {
+
+  _getLinksToRender = (isNewPage) => {
     if (isNewPage) {
       return this.props.allLinksQuery.allLinks
     }
     const rankedLinks = this.props.allLinksQuery.allLinks.slice()
     rankedLinks.sort((l1, l2) => l2.votes.length - l1.votes.length)
     return rankedLinks
+  }
+
+  _nextPage = () => {
+    const page = parseInt(this.props.match.params.page, 10)
+    if (page <= this.props.allLinksQuery._allLinksMeta.count / LINKS_PER_PAGE) {
+      const nextPage = page + 1
+      this.props.history.push(`/new/${nextPage}`)
+    }
+  }
+
+  _previousPage = () => {
+    const page = parseInt(this.props.match.params.page, 10)
+    if (page > 1) {
+      const previousPage = page - 1
+      this.props.history.push(`/new/${previousPage}`)
+    }
+  }
+
+  _updateCacheAfterVote = (store, createVote, linkId) => {
+    const isNewPage = this.props.location.pathname.includes('new')
+    const page = parseInt(this.props.match.params.page, 10)
+    const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
+    const first = isNewPage ? LINKS_PER_PAGE : 100
+    const orderBy = isNewPage ? "createdAt_DESC" : null
+    const data = store.readQuery({ query: ALL_LINKS_QUERY, variables: { first, skip, orderBy } })
+
+    const votedLink = data.allLinks.find(link => link.id === linkId)
+    votedLink.votes = createVote.link.votes
+    store.writeQuery({ query: ALL_LINKS_QUERY, data })
   }
 
   _subscribeToNewLinks = () => {
@@ -97,7 +125,7 @@ class LinkList extends Component {
       document: gql`
         subscription {
           Vote(filter: {
-            mutation_in: [CREATED]
+              mutation_in: [CREATED]
           }) {
             node {
               id
@@ -138,38 +166,7 @@ class LinkList extends Component {
     })
   }
 
-  _nextPage = () => {
-    const page = parseInt(this.props.match.params.page, 10)
-    if (page <= this.props.allLinksQuery._allLinksMeta.count / LINKS_PER_PAGE) {
-      const nextPage = page + 1
-      this.props.history.push(`/new/${nextPage}`)
-    }
-  }
-
-  _previousPage = () => {
-    const page = parseInt(this.props.match.params.page, 10)
-    if (page > 1) {
-      const nextPage = page - 1
-      this.props.history.push(`/new/${nextPage}`)
-    }
-  }
-
-  _updateCacheAfterVote = (store, createVote, linkId) => {
-    const isNewPage = this.props.location.pathname.includes('new')
-    const page = parseInt(this.props.match.params.page, 10)
-    const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
-    const first = isNewPage ? LINKS_PER_PAGE : 10
-    const orderBy = isNewPage ? 'createdAt_DESC' : null
-
-    const data = store.readQuery({ query: ALL_LINKS_QUERY, variables: { first, skip, orderBy } })
-
-    const votedLink = data.allLinks.find(link => link.id === linkId)
-    votedLink.votes = createVote.link.votes
-    store.writeQuery({ query: ALL_LINKS_QUERY, data })
-  }
-
 }
-
 
 export const ALL_LINKS_QUERY = gql`
   query AllLinksQuery($first: Int, $skip: Int, $orderBy: LinkOrderBy) {
@@ -197,7 +194,7 @@ export const ALL_LINKS_QUERY = gql`
 
 export default graphql(ALL_LINKS_QUERY, {
   name: 'allLinksQuery',
-  options: ownProps => {
+  options: (ownProps) => {
     const page = parseInt(ownProps.match.params.page, 10)
     const isNewPage = ownProps.location.pathname.includes('new')
     const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
@@ -207,4 +204,4 @@ export default graphql(ALL_LINKS_QUERY, {
       variables: { first, skip, orderBy }
     }
   }
-}) (LinkList)
+})(LinkList)

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
 import { withRouter } from 'react-router'
+import { GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
 
 class Header extends Component {
 
@@ -11,16 +11,16 @@ class Header extends Component {
       <div className='flex pa1 justify-between nowrap orange'>
         <div className='flex flex-fixed black'>
           <div className='fw7 mr1'>Hacker News</div>
-          <Link to='/new/1' className='ml1 no-underline black'>new</Link>
+          <Link to='/' className='ml1 no-underline black'>new</Link>
           <div className='ml1'>|</div>
           <Link to='/top' className='ml1 no-underline black'>top</Link>
           <div className='ml1'>|</div>
           <Link to='/search' className='ml1 no-underline black'>search</Link>
           {userId &&
-            <div className='flex'>
-              <div className='ml1'>|</div>
-              <Link to='/create' className='ml1 no-underline black'>submit</Link>
-            </div>
+          <div className='flex'>
+            <div className='ml1'>|</div>
+            <Link to='/create' className='ml1 no-underline black'>submit</Link>
+          </div>
           }
         </div>
         <div className='flex flex-fixed'>

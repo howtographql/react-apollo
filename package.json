@@ -2,22 +2,17 @@
   "name": "hackernews-react-apollo",
   "version": "0.1.0",
   "private": true,
-  "devDependencies": {
-    "react-scripts": "1.0.7"
-  },
   "dependencies": {
-    "apollo-cache-inmemory": "^1.0.0",
-    "apollo-client": "^2.0.1",
-    "apollo-link-http": "^1.0.0",
+    "apollo-client-preset": "^1.0.1",
     "apollo-link-ws": "^1.0.0",
-    "apollo-utilities": "^1.0.1",
     "graphql": "^0.11.7",
     "graphql-tag": "^2.5.0",
     "react": "^16.0.0",
     "react-apollo": "^2.0.0",
     "react-dom": "^16.0.0",
+    "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "subscriptions-transport-ws": "^0.8.2"
+    "react-scripts": "1.0.17"
   },
   "scripts": {
     "start": "react-scripts start",

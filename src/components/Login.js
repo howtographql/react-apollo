@@ -43,7 +43,7 @@ class Login extends Component {
             className='pointer mr2 button'
             onClick={() => this._confirm()}
           >
-            {this.state.login ? 'login' : 'create Account' }
+            {this.state.login ? 'login' : 'create account' }
           </div>
           <div
             className='pointer button'
@@ -65,8 +65,8 @@ class Login extends Component {
           password
         }
       })
-      const token = result.data.authenticateUser.token
-      this._saveUserData(null, token)
+      const { id, token } = result.data.authenticateUser
+      this._saveUserData(id, token)
     } else {
       const result = await this.props.signupUserMutation({
         variables: {
@@ -75,25 +75,19 @@ class Login extends Component {
           password
         }
       })
-      const id = result.data.signupUser.id
-      const token = result.data.signupUser.token
+      const { id, token } = result.data.signupUser
       this._saveUserData(id, token)
     }
     this.props.history.push(`/`)
   }
 
   _saveUserData = (id, token) => {
-    if (id) {
-      localStorage.setItem(GC_USER_ID, id)      
-    }
-    if (token) {
-      localStorage.setItem(GC_AUTH_TOKEN, token)      
-    }
+    localStorage.setItem(GC_USER_ID, id)
+    localStorage.setItem(GC_AUTH_TOKEN, token)
   }
 
 }
 
-// export default Login
 
 const SIGNUP_USER_MUTATION = gql`
   mutation SignupUserMutation($email: String!, $password: String!, $name: String!) {
@@ -114,10 +108,8 @@ const AUTHENTICATE_USER_MUTATION = gql`
       email: $email,
       password: $password
     }) {
+      id
       token
-      user {
-        id
-      }
     }
   }
 `
