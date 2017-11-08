@@ -34,7 +34,7 @@ When prompted which cluster you want to deploy to, choose any of the **Shared Cl
 
 Paste the service ID (which you find in the generated `.graphcoolrc` file inside the `server` directory or by running `graphcool info`) into `./src/index.js` replacing the current placeholder `__SERVICE_ID__`. 
 
-### 5. Install dependencies & run locally
+### 4. Install dependencies & run locally
 
 ```sh
 cd ..
