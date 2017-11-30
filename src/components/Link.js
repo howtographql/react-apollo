@@ -21,11 +21,11 @@ class Link extends Component {
       </div>
     )
   }
-
+  
   _voteForLink = async () => {
     const userId = localStorage.getItem(GC_USER_ID)
-    const voterIds = this.props.link.votes.map(vote => vote.user.id)
-    if (voterIds.includes(userId)) {
+    const userHasAlreadyVoted = this.props.link.votes.some(vote => vote.user.id === userId)
+    if (userHasAlreadyVoted) {
       console.log(`User (${userId}) already voted for this link.`)
       return
     }
