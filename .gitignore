@@ -2,7 +2,7 @@
 
 # dependencies
 node_modules
-.graphcoolrd
+.graphcoolrc
 
 # testing
 /coverage
