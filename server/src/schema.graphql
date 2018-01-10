@@ -1,4 +1,4 @@
-# import Link, Vote from "./generated/graphcool.graphql"
+# import Link, Vote, LinkSubscriptionPayload, VoteSubscriptionPayload from "./generated/graphcool.graphql"
 
 type Query {
   feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
@@ -24,7 +24,7 @@ type AuthPayload {
 type User {
   id: ID!
   name: String!
-  email: String! @unique
+  email: String!
 }
 
 type Subscription {
