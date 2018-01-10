@@ -1,4 +1,4 @@
-# import Link, Vote from "./generated/database.graphql"
+# import Link, Vote from "./generated/graphcool.graphql"
 
 type Query {
   feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!

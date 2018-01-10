@@ -62,7 +62,7 @@ class CreateLink extends Component {
   }
 }
 
-const CREATE_LINK_MUTATION = gql`
+const POST_MUTATION = gql`
   mutation PostMutation($description: String!, $url: String!) {
     post(description: $description, url: $url) {
       id
@@ -77,6 +77,6 @@ const CREATE_LINK_MUTATION = gql`
   }
 `
 
-export default graphql(CREATE_LINK_MUTATION, { name: 'postMutation' })(
+export default graphql(POST_MUTATION, { name: 'postMutation' })(
   CreateLink,
 )

@@ -6,12 +6,12 @@ import gql from 'graphql-tag'
 
 class Link extends Component {
   render() {
-    const isAuthenticated = localStorage.getItem(AUTH_TOKEN)
+    const authToken = localStorage.getItem(AUTH_TOKEN)
     return (
       <div className="flex mt2 items-start">
         <div className="flex items-center">
           <span className="gray">{this.props.index + 1}.</span>
-          {isAuthenticated && (
+          {authToken && (
             <div className="ml1 gray f11" onClick={() => this._voteForLink()}>
               ▲
             </div>

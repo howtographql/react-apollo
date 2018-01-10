@@ -6,7 +6,7 @@ import Link from './Link'
 class Search extends Component {
   state = {
     links: [],
-    searchText: '',
+    filter: '',
   }
 
   render() {
@@ -16,7 +16,7 @@ class Search extends Component {
           Search
           <input
             type="text"
-            onChange={e => this.setState({ searchText: e.target.value })}
+            onChange={e => this.setState({ filter: e.target.value })}
           />
           <button onClick={() => this._executeSearch()}>OK</button>
         </div>
@@ -28,10 +28,10 @@ class Search extends Component {
   }
 
   _executeSearch = async () => {
-    const { searchText } = this.state
+    const { filter } = this.state
     const result = await this.props.client.query({
       query: FEED_SEARCH_QUERY,
-      variables: { searchText },
+      variables: { filter },
     })
     const links = result.data.feed.links
     this.setState({ links })
@@ -39,8 +39,8 @@ class Search extends Component {
 }
 
 const FEED_SEARCH_QUERY = gql`
-  query FeedSearchQuery($searchText: String!) {
-    feed(filter: $searchText) {
+  query FeedSearchQuery($filter: String!) {
+    feed(filter: $filter) {
       links {
         id
         url

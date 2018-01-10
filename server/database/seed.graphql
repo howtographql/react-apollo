@@ -1,8 +1,0 @@
-mutation {
-  createLink(data: {
-    url: "http://asd.asd",
-    description: "asdasd"
-  }) {
-    id
-  }
-}
