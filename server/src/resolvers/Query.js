@@ -1,5 +1,5 @@
 async function feed(parent, args, ctx, info) {
-  const { filter, first, skip } = args // destructure input arguments
+  const { filter, first, skip, orderBy } = args // destructure input arguments
   const where = filter
     ? { OR: [{ url_contains: filter }, { description_contains: filter }] }
     : {}
@@ -7,7 +7,7 @@ async function feed(parent, args, ctx, info) {
   const allLinks = await ctx.db.query.links({})
   const count = allLinks.length
 
-  const queriedLinkes = await ctx.db.query.links({ first, skip, where })
+  const queriedLinkes = await ctx.db.query.links({ first, skip, orderBy, where })
 
   return {
     linkIds: queriedLinkes.map(link => link.id),
