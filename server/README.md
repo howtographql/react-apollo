@@ -14,7 +14,7 @@ cd graphql-js
 ### 2. Deploy the Prisma database service
 
 ```sh
-prisma deploy
+yarn prisma deploy
 ```
 
 When prompted where (i.e. to which _cluster_) you want to deploy your service, choose any of the public clusters, e.g. `public-us1` or `public-eu1`. (If you have Docker installed, you can also deploy locally.)
