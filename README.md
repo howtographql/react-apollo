@@ -25,7 +25,7 @@ When prompted where (i.e. to which _cluster_) you want to deploy your service, c
 
 ### 3. Set the Prisma service endpoint
 
-From the output of the previous command, copy the `HTTP` endpoint and paste it into `src/index.js` where it's used to instantiate the `Prisma` binding. You need to replace the current placeholder `__PRISMA_ENDPOINT`:
+From the output of the previous command, copy the `HTTP` endpoint and paste it into `server/src/index.js` where it's used to instantiate the `Prisma` binding. You need to replace the current placeholder `__PRISMA_ENDPOINT`:
 
 ```js
 const server = new GraphQLServer({
@@ -78,4 +78,4 @@ Now that the server is running, you can run the app as well (the command needs t
 yarn start
 ```
 
-Open the 
+You can now open your browser and use the app on `http://localhost:3000`.
