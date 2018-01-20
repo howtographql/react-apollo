@@ -1,116 +1,66 @@
-# node-basic
+# hackernews-graphql-js
 
-🚀 Basic starter code for a scalable, production-ready GraphQL server for Node.js.
+This repository contains the final project for the [**GraphQL.js tutorial**](https://www.howtographql.com/graphql-js/0-introduction/) on [How to GraphQL](https://www.howtographql.com/). Note that it also serves as foundation for all frontend tutorials on the site.
 
-![](https://imgur.com/LG6r1q1.png)
+## Usage
 
-## Features
-
-- **Scalable GraphQL Server:** `graphql-yoga` based on Apollo Server & Express
-- **GraphQL-native database:** Includes GraphQL database binding to Graphcool (running on MySQL)
-- Out-of-the-box support for [GraphQL Playground](https://github.com/graphcool/graphql-playground) & [Tracing](https://github.com/apollographql/apollo-tracing)
-- Simple data model – easy to adjust
-- Preconfigured [`graphql-config`](https://github.com/graphcool/graphql-config) setup
-
-## Requirements
-
-You need to have the following things installed:
-
-* Node 8+
-* Graphcool CLI: `npm i -g graphcool@beta`
-* GraphQL CLI: `npm i -g graphql-cli`
-* GraphQL Playground desktop app (optional): [Download](https://github.com/graphcool/graphql-playground/releases)
-
-## Getting started
+### 1. Clone repository
 
 ```sh
-# Bootstrap GraphQL server in directory `my-app`, based on `node-basic` boilerplate
-graphql create my-app --boilerplate node-basic
-
-# Navigate to the new project
-cd my-app
-
-# Deploy the Graphcool database
-graphcool deploy
-
-# Start server (runs on http://localhost:4000)
-yarn start
-
-# Open Playground to explore GraphQL API
-yarn playground
+git clone https://github.com/howtographql/graphql-js
+cd graphql-js
 ```
 
-<details>
-
-<summary>Alternative: Clone repo</summary>
+### 2. Deploy the Prisma database service
 
 ```sh
-# Clone the repo and navigate into project directory
-git clone https://github.com/graphql-boilerplates/node-graphql-server.git
-cd node-graphql-server/basic
-
-# Deploy the Graphcool database
-graphcool deploy
-
-# Install node dependencies
-yarn install
-
-# Start server (runs on http://localhost:4000)
-yarn start
-
-# Open Playground to explore GraphQL API
-yarn playground
+prisma deploy
 ```
 
-</details>
+When prompted where (i.e. to which _cluster_) you want to deploy your service, choose any of the public clusters, e.g. `public-us1` or `public-eu1`. (If you have Docker installed, you can also deploy locally.)
 
-## Docs
+### 3. Set the Prisma service endpoint
 
-### Commands
+From the output of the previous command, copy the `HTTP` endpoint and paste it into `src/index.js` where it's used to instantiate the `Prisma` binding. You need to replace the current placeholder `__PRISMA_ENDPOINT`:
 
-* `yarn start` starts GraphQL server
-* `yarn playground` opens the GraphQL Playground
-* `yarn deploy` deploys GraphQL server to [`now`](https://now.sh)
+```js
+const server = new GraphQLServer({
+  typeDefs: './src/schema.graphql',
+  resolvers,
+  context: req => ({
+    ...req,
+    db: new Prisma({
+      typeDefs: 'src/generated/prisma.graphql',
+      endpoint: "__PRISMA_ENDPOINT__",
+      secret: 'mysecret123',
+    }),
+  }),
+})
+```
 
-### Project structure
+For example:
 
-#### `/` - configuration files
+```js
+const server = new GraphQLServer({
+  typeDefs: './src/schema.graphql',
+  resolvers,
+  context: req => ({
+    ...req,
+    db: new Prisma({
+      typeDefs: 'src/generated/prisma.graphql',
+      endpoint: "https://eu1.prisma.sh/public-hillcloak-flier-942261/hackernews-graphql-js/dev",
+      secret: 'mysecret123',
+    }),
+  }),
+})
+```
 
-- [`.graphqlconfig.yml`](./.graphqlconfig.yml) GraphQL configuration file containing the endpoints and schema configuration. Used by the [`graphql-cli`](https://github.com/graphcool/graphql-cli) and the [GraphQL Playground](https://github.com/graphcool/graphql-playground). See [`graphql-config`](https://github.com/graphcool/graphql-config) for more information.
-- [`graphcool.yml`](./graphcool.yml) The configuration file for your database service ([documentation](https://www.graph.cool/docs/1.0/reference/graphcool.yml/overview-and-example-foatho8aip)).
+Note that the part `public-hillcloak-flier-952361` of the URL is unique to your service.
 
-#### `/database` - datamodel
+### 4. Start the server & open Playground
 
-- [`database/datamodel.graphql`](./database/datamodel.graphql) contains the data model that you define for your database service (written in [SDL](https://blog.graph.cool/graphql-sdl-schema-definition-language-6755bcb9ce51)).
+To interact with the API in a GraphQL Playground, all you need to do is execute the `dev` script defined in `package.json`:
 
-#### `/src` - application server
-
-- [`src/schema.graphql`](src/schema.graphql) defines your **application schema**. It contains the GraphQL API that you want to expose to your client applications.
-- [`src/index.js`](src/index.js) is the entry point of your server, putting everything together and starting the `GraphQLServer` from [`graphql-yoga`](https://github.com/graphcool/graphql-yoga).
-
-#### `/src/generated` - generated files
-
-- [`src/generated/schema.graphql`](src/generated/schema.graphql) defines your **database schema**. It contains the GraphQL API exposed by the Graphcool Database. This file is automatically generated every time `graphcool deploy` is executed, according to the datamodel in `database/datamodel.graphql`.
-
-### Common questions
-
-#### I'm getting a 'Schema could not be fetched.' error after deploying, what gives?
-
-Access to the Graphcool API is secured by a secret. This also applies to the introspection query. Using the latest version of GraphQL Playground, the `Authorization` header should automatically be setup with a proper JWT signing the secret. If that's not the case, you can follow these steps to access your API:
-
-1. Visit http://jwtbuilder.jamiekurtz.com/
-1. Replace the `Key` at the bottom of the page with your `secret` from the [`graphcool.yml`](./graphcool.yml#L5)
-1. Click `Create signed JWT` and copy the obtained token
-1. Now, to access the schema, use the `Authorization: Bearer <token>` header, or in the GraphQL Playground set it as JSON:
-    ```json
-    {
-      "Authorization": "Bearer <token>"
-    }
-    ```
-1. Reload the schema in the Playground (the _refresh_-button is located right next to the URL of the server)
-
-> Note: Currently, no content of the signed JWT is verified by the database! This will be implemented [according to this proposal](https://github.com/graphcool/framework/issues/1365) at a later stage.
-
-## Contributing
-
-Your feedback is **very helpful**, please share your opinion and thoughts! If you have any questions, join the [`#graphql-boilerplate`](https://graphcool.slack.com/messages/graphql-boilerplate) channel on our [Slack](https://graphcool.slack.com/).
+```sh
+yarn dev
+```

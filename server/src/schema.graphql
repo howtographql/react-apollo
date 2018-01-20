@@ -1,4 +1,4 @@
-# import Link, Vote, LinkSubscriptionPayload, VoteSubscriptionPayload from "./generated/graphcool.graphql"
+# import Link, Vote from "./generated/prisma.graphql"
 
 type Query {
   feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
