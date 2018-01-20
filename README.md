@@ -15,6 +15,7 @@ cd react-apollo
 
 ```sh
 cd server
+yarn install
 prisma deploy
 ```
 
@@ -65,14 +66,16 @@ Note that the part `public-hillcloak-flier-952361` of the URL is unique to your 
 To start the server, all you need to do is execute the `start` script by running the following command inside the `server` directory:
 
 ```sh
+yarn install
 yarn start
 ```
 
 ### 5. Run the app
 
-Now that the server is running, you can run the app as well:
+Now that the server is running, you can run the app as well (the command needs to be run in a new terminal tab/window inside the root directory `react-apollo`):
 
 ```sh
-cd ..
 yarn start
 ```
+
+Open the 

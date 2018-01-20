@@ -79,7 +79,7 @@ class Login extends Component {
     this.props.history.push(`/`)
   }
 
-  _saveUserData = (id, token) => {
+  _saveUserData = (token) => {
     localStorage.setItem(AUTH_TOKEN, token)
   }
 }

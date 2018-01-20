@@ -158,10 +158,6 @@ class LinkList extends Component {
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-        console.log(`NEW VOTE`)
-        const votedLinkIndex = previous.feed.links.findIndex(
-          link => link.id === subscriptionData.data.newVote.node.link.id,
-        )
         const newAllLinks = previous.feed.links.slice()
         const result = {
           ...previous,
