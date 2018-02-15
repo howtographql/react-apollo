@@ -8,38 +8,73 @@ This is the sample project that belongs to the [React & Apollo Tutorial](https:/
 
 ```sh
 git clone https://github.com/howtographql/react-apollo/
-cd react-apollo
 ```
 
-### 2. Create GraphQL API with [`graphcool`](https://www.npmjs.com/package/graphcool)
-
-If you haven't already, install the Graphcool CLI:
+### 2. Deploy the Prisma database service
 
 ```sh
-# Install Graphcool CLI
-npm install -g graphcool
+cd react-apollo/server
+yarn prisma deploy
 ```
 
-Once it's installed, you can deploy the Graphcool service based on the existing definition inside the [`server`](./server) directory:
+When prompted where (i.e. to which _cluster_) you want to deploy your service, choose any of the public clusters, e.g. `public-us1` or `public-eu1`. (If you have Docker installed, you can also deploy locally.)
+
+### 3. Set the Prisma service endpoint
+
+From the output of the previous command, copy the `HTTP` endpoint and paste it into `server/src/index.js` where it's used to instantiate the `Prisma` binding. You need to replace the current placeholder `__PRISMA_ENDPOINT`:
+
+```js
+const server = new GraphQLServer({
+  typeDefs: './src/schema.graphql',
+  resolvers,
+  context: req => ({
+    ...req,
+    db: new Prisma({
+      typeDefs: 'src/generated/prisma.graphql',
+      endpoint: '__PRISMA_ENDPOINT__',
+      secret: 'mysecret123',
+    }),
+  }),
+})
+```
+
+For example:
+
+```js
+const server = new GraphQLServer({
+  typeDefs: './src/schema.graphql',
+  resolvers,
+  context: req => ({
+    ...req,
+    db: new Prisma({
+      typeDefs: 'src/generated/prisma.graphql',
+      endpoint: 'https://eu1.prisma.sh/public-hillcloak-flier-942261/hackernews-graphql-js/dev',
+      secret: 'mysecret123',
+    }),
+  }),
+})
+```
+
+Note that the part `public-hillcloak-flier-952361` of the URL is unique to your service.
+
+### 4. Start the server
+
+To start the server, all you need to do is install the the dependencies execute the `start` script by running the following command inside the `server` directory:
 
 ```sh
-cd server
 yarn install
-graphcool deploy
+yarn start
 ```
 
-When prompted which cluster you want to deploy to, choose any of the **Shared Clusters** options (`shared-eu-west-1`, `shared-ap-northeast-1` or `shared-us-west-2`).
+> **Note**: If you want to interact with the GraphQL APIs inside a [GraphQL Playground](https://github.com/graphcool/graphql-playground), you can also run `yarn dev`.
 
-### 3. Connect the app with your GraphQL API
+### 5. Run the app
 
-Paste the service ID (which you find in the generated `.graphcoolrc` file inside the `server` directory or by running `graphcool info`) into `./src/index.js` replacing the current placeholder `__SERVICE_ID__`. 
-
-### 5. Install dependencies & run locally
+Now that the server is running, you can start the app as well. The commands need to be run in a new terminal tab/window inside the root directory `react-apollo` (because the current tab is blocked by the process running the server):
 
 ```sh
-cd ..
 yarn install
-yarn start # open http://localhost:3000 in your browser
+yarn start
 ```
 
-
+You can now open your browser and use the app on `http://localhost:3000`.
