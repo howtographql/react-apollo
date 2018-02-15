@@ -19,8 +19,9 @@ const server = new GraphQLServer({
     ...req,
     db: new Prisma({
       typeDefs: 'src/generated/prisma.graphql',
-      endpoint: "__PRISMA_ENDPOINT__",
+      endpoint: '__PRISMA_ENDPOINT__',
       secret: 'mysecret123',
+      debug: true
     }),
   }),
 })
