@@ -114,12 +114,15 @@ class LinkList extends Component {
           }
         }
       `,
-      updateQuery: (previous, { subscriptionData }) => {        
-        const newAllLinks = [subscriptionData.data.newLink.node, ...previous.feed.links]
+      updateQuery: (previous, { subscriptionData }) => {
+        const newAllLinks = [
+          subscriptionData.data.newLink.node,
+          ...previous.feed.links,
+        ]
         const result = {
           ...previous,
           feed: {
-            links: newAllLinks
+            links: newAllLinks,
           },
         }
         return result
@@ -157,14 +160,6 @@ class LinkList extends Component {
           }
         }
       `,
-      updateQuery: (previous, { subscriptionData }) => {
-        const newAllLinks = previous.feed.links.slice()
-        const result = {
-          ...previous,
-          allLinks: newAllLinks,
-        }
-        return result
-      },
     })
   }
 }
