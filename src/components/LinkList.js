@@ -122,6 +122,8 @@ class LinkList extends Component {
         const result = {
           ...previous,
           feed: {
+            ...previous.feed,
+            count: previous.feed.count + 1,
             links: newAllLinks,
           },
         }
