@@ -3,7 +3,6 @@ import { AUTH_TOKEN } from '../constants'
 import { timeDifferenceForDate } from '../utils'
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
-import { FEED_QUERY } from './LinkList'
 
 const VOTE_MUTATION = gql`
   mutation VoteMutation($linkId: ID!) {
@@ -36,17 +35,9 @@ class Link extends Component {
             <Mutation
               mutation={VOTE_MUTATION}
               variables={{ linkId }}
-              update={(cache, { data: { vote: createVote } }) => {
-                // 1
-                const data = cache.readQuery({ query: FEED_QUERY })
-                // 2
-                const votedLink = data.feed.links.find(
-                  link => link.id === linkId
-                )
-                votedLink.votes = createVote.link.votes
-                // 3
-                cache.writeQuery({ query: FEED_QUERY, data })
-              }}
+              update={(cache, { data: { vote } }) =>
+                this.props.updateStoreAfterVote(cache, vote, linkId)
+              }
             >
               {voteMutation => (
                 <div className="ml1 gray f11" onClick={voteMutation}>
