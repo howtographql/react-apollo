@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import { FEED_QUERY } from './LinkList'
+import { LINKS_PER_PAGE } from '../constants'
 
 // 1
 const POST_MUTATION = gql`
@@ -56,17 +57,27 @@ class CreateLink extends Component {
           mutation={POST_MUTATION}
           variables={{ description, url }}
           update={(cache, { data: { post } }) => {
-            const data = cache.readQuery({ query: FEED_QUERY })
+            const first = LINKS_PER_PAGE
+            const skip = 0
+            const orderBy = 'createdAt_DESC'
+            const data = cache.readQuery({
+              query: FEED_QUERY,
+              variables: { first, skip, orderBy },
+            })
             data.feed.links.splice(0, 0, post)
+            data.feed.links.pop()
             cache.writeQuery({
               query: FEED_QUERY,
               data,
+              variables: { first, skip, orderBy },
             })
           }}
         >
           {postMutation => (
             <button
-              onClick={() => postMutation() && this.props.history.push('/')}
+              onClick={() =>
+                postMutation() && this.props.history.push(`/new/1`)
+              }
             >
               Submit
             </button>
