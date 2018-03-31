@@ -1,10 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import LinkList from './LinkList'
 
-class App extends Component {
-  render() {
-    return <LinkList />
-  }
-}
-
-export default App
+export default () => <LinkList />
