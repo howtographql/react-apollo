@@ -4,9 +4,7 @@ import gql from 'graphql-tag'
 import { FEED_QUERY } from './LinkList'
 import { LINKS_PER_PAGE } from '../constants'
 
-// 1
 const POST_MUTATION = gql`
-  # 2
   mutation PostMutation($description: String!, $url: String!) {
     post(description: $description, url: $url) {
       id
@@ -88,5 +86,4 @@ class CreateLink extends Component {
   }
 }
 
-// 3
 export default CreateLink

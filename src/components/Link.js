@@ -23,49 +23,40 @@ const VOTE_MUTATION = gql`
   }
 `
 
-class Link extends Component {
-  render() {
-    const authToken = localStorage.getItem(AUTH_TOKEN)
-    const { link: { id: linkId } } = this.props
-    return (
-      <div className="flex mt2 items-start">
-        <div className="flex items-center">
-          <span className="gray">{this.props.index + 1}.</span>
-          {authToken && (
-            <Mutation
-              mutation={VOTE_MUTATION}
-              variables={{ linkId }}
-              update={(cache, { data: { vote } }) =>
-                this.props.updateStoreAfterVote(cache, vote, linkId)
-              }
-            >
-              {voteMutation => (
-                <div className="ml1 gray f11" onClick={voteMutation}>
-                  ▲
-                </div>
-              )}
-            </Mutation>
-          )}
+export default props => {
+  const authToken = localStorage.getItem(AUTH_TOKEN)
+  const {
+    link: { id: linkId, description, url, votes, postedBy, createdAt },
+  } = props
+  return (
+    <div className="flex mt2 items-start">
+      <div className="flex items-center">
+        <span className="gray">{props.index + 1}.</span>
+        {authToken && (
+          <Mutation
+            mutation={VOTE_MUTATION}
+            variables={{ linkId }}
+            update={(cache, { data: { vote } }) =>
+              props.updateStoreAfterVote(cache, vote, linkId)
+            }
+          >
+            {voteMutation => (
+              <div className="ml1 gray f11" onClick={voteMutation}>
+                ▲
+              </div>
+            )}
+          </Mutation>
+        )}
+      </div>
+      <div className="ml1">
+        <div>
+          {description} ({url})
         </div>
-        <div className="ml1">
-          <div>
-            {this.props.link.description} ({this.props.link.url})
-          </div>
-          <div className="f6 lh-copy gray">
-            {this.props.link.votes.length} votes | by{' '}
-            {this.props.link.postedBy
-              ? this.props.link.postedBy.name
-              : 'Unknown'}{' '}
-            {timeDifferenceForDate(this.props.link.createdAt)}
-          </div>
+        <div className="f6 lh-copy gray">
+          {votes.length} votes | by {postedBy ? postedBy.name : 'Unknown'}
+          {timeDifferenceForDate(createdAt)}
         </div>
       </div>
-    )
-  }
-
-  _voteForLink = async () => {
-    // ... you'll implement this in chapter 6
-  }
+    </div>
+  )
 }
-
-export default Link

@@ -122,11 +122,9 @@ class LinkList extends Component {
   render() {
     return (
       <Query query={FEED_QUERY} variables={this.getQueryVariables()}>
-        {result => {
-          if (result.loading) return <div>Loading</div>
-          if (result.error) return <div>Error</div>
-
-          const { data, subscribeToMore } = result
+        {({ loading, error, data, subscribeToMore }) => {
+          if (loading) return <div>Loading</div>
+          if (error) return <div>Error</div>
 
           const isNewPage = this.props.location.pathname.includes('new')
           const linksToRender = this._getLinksToRender(isNewPage, data)
