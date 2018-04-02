@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router'
 import { AUTH_TOKEN } from '../constants'
 
-const Header = () => {
+const Header = props => {
   const authToken = localStorage.getItem(AUTH_TOKEN)
   return (
     <div className="flex pa1 justify-between nowrap orange">
@@ -35,7 +35,7 @@ const Header = () => {
             className="ml1 pointer black"
             onClick={() => {
               localStorage.removeItem(AUTH_TOKEN)
-              this.props.history.push(`/`)
+              props.history.push(`/`)
             }}
           >
             logout

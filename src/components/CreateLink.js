@@ -28,7 +28,7 @@ const POST_MUTATION = gql`
 class CreateLink extends Component {
   state = {
     description: '',
-    url: '',
+    url: ''
   }
 
   render() {
@@ -54,32 +54,25 @@ class CreateLink extends Component {
         <Mutation
           mutation={POST_MUTATION}
           variables={{ description, url }}
+          onCompleted={() => this.props.history.push('/new/1')}
           update={(cache, { data: { post } }) => {
             const first = LINKS_PER_PAGE
             const skip = 0
             const orderBy = 'createdAt_DESC'
             const data = cache.readQuery({
               query: FEED_QUERY,
-              variables: { first, skip, orderBy },
+              variables: { first, skip, orderBy }
             })
-            data.feed.links.splice(0, 0, post)
+            data.feed.links.unshift(post)
             data.feed.links.pop()
             cache.writeQuery({
               query: FEED_QUERY,
               data,
-              variables: { first, skip, orderBy },
+              variables: { first, skip, orderBy }
             })
           }}
         >
-          {postMutation => (
-            <button
-              onClick={() =>
-                postMutation() && this.props.history.push(`/new/1`)
-              }
-            >
-              Submit
-            </button>
-          )}
+          {postMutation => <button onClick={postMutation}>Submit</button>}
         </Mutation>
       </div>
     )

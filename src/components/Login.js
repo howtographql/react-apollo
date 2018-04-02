@@ -24,31 +24,31 @@ class Login extends Component {
     login: true, // switch between Login and SignUp
     email: '',
     password: '',
-    name: '',
+    name: ''
   }
 
   render() {
-    const { email, password, name } = this.state
+    const { login, email, password, name } = this.state
     return (
       <div>
-        <h4 className="mv3">{this.state.login ? 'Login' : 'Sign Up'}</h4>
+        <h4 className="mv3">{login ? 'Login' : 'Sign Up'}</h4>
         <div className="flex flex-column">
-          {!this.state.login && (
+          {!login && (
             <input
-              value={this.state.name}
+              value={name}
               onChange={e => this.setState({ name: e.target.value })}
               type="text"
               placeholder="Your name"
             />
           )}
           <input
-            value={this.state.email}
+            value={email}
             onChange={e => this.setState({ email: e.target.value })}
             type="text"
             placeholder="Your email address"
           />
           <input
-            value={this.state.password}
+            value={password}
             onChange={e => this.setState({ password: e.target.value })}
             type="password"
             placeholder="Choose a safe password"
@@ -56,30 +56,28 @@ class Login extends Component {
         </div>
         <div className="flex mt3">
           <Mutation
-            mutation={this.state.login ? LOGIN_MUTATION : SIGNUP_MUTATION}
+            mutation={login ? LOGIN_MUTATION : SIGNUP_MUTATION}
             variables={{ email, password, name }}
             onCompleted={data => this._confirm(data)}
           >
             {mutation => (
               <div className="pointer mr2 button" onClick={mutation}>
-                {this.state.login ? 'login' : 'create account'}
+                {login ? 'login' : 'create account'}
               </div>
             )}
           </Mutation>
           <div
             className="pointer button"
-            onClick={() => this.setState({ login: !this.state.login })}
+            onClick={() => this.setState({ login: !login })}
           >
-            {this.state.login
-              ? 'need to create an account?'
-              : 'already have an account?'}
+            {login ? 'need to create an account?' : 'already have an account?'}
           </div>
         </div>
       </div>
     )
   }
 
-  _confirm = data => {
+  _confirm = async data => {
     const { token } = this.state.login ? data.login : data.signup
     this._saveUserData(token)
     this.props.history.push(`/`)

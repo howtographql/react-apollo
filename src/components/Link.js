@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { AUTH_TOKEN } from '../constants'
 import { timeDifferenceForDate } from '../utils'
 import { Mutation } from 'react-apollo'
@@ -23,21 +23,18 @@ const VOTE_MUTATION = gql`
   }
 `
 
-export default props => {
+export default ({ link, index, updateStoreAfterVote }) => {
   const authToken = localStorage.getItem(AUTH_TOKEN)
-  const {
-    link: { id: linkId, description, url, votes, postedBy, createdAt },
-  } = props
   return (
     <div className="flex mt2 items-start">
       <div className="flex items-center">
-        <span className="gray">{props.index + 1}.</span>
+        <span className="gray">{index + 1}.</span>
         {authToken && (
           <Mutation
             mutation={VOTE_MUTATION}
-            variables={{ linkId }}
+            variables={{ linkId: link.id }}
             update={(cache, { data: { vote } }) =>
-              props.updateStoreAfterVote(cache, vote, linkId)
+              updateStoreAfterVote(cache, vote, link.id)
             }
           >
             {voteMutation => (
@@ -50,11 +47,12 @@ export default props => {
       </div>
       <div className="ml1">
         <div>
-          {description} ({url})
+          {link.description} ({link.url})
         </div>
         <div className="f6 lh-copy gray">
-          {votes.length} votes | by {postedBy ? postedBy.name : 'Unknown'}
-          {timeDifferenceForDate(createdAt)}
+          {`${link.votes.length} votes | by
+          ${link.postedBy ? link.postedBy.name : 'Unknown'}
+          ${timeDifferenceForDate(link.createdAt)}`}
         </div>
       </div>
     </div>
