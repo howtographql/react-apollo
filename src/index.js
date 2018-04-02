@@ -10,7 +10,11 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { BrowserRouter } from 'react-router-dom'
 import { AUTH_TOKEN } from './constants'
 import { setContext } from 'apollo-link-context'
+<<<<<<< HEAD
 import { split } from 'apollo-link'
+=======
+import { split } from 'apollo-client-preset'
+>>>>>>> 4f0d49bc754427951f0ce8b0345373051b6047b0
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 
