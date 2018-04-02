@@ -29,7 +29,10 @@ export const FEED_QUERY = gql`
   }
 `
 
-const updateCacheAfterVote = (page, isNewPage, cache, createVote, linkId) => {
+const updateCacheAfterVote = (props, cache, createVote, linkId) => {
+  const isNewPage = props.location.pathname.includes('new')
+  const page = parseInt(props.match.params.page, 10)
+
   const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
   const first = isNewPage ? LINKS_PER_PAGE : 100
   const orderBy = isNewPage ? 'createdAt_DESC' : null
@@ -43,14 +46,18 @@ const updateCacheAfterVote = (page, isNewPage, cache, createVote, linkId) => {
   cache.writeQuery({ query: FEED_QUERY, data })
 }
 
-const getQueryVariables = (page, isNewPage) => {
+const getQueryVariables = props => {
+  const isNewPage = props.location.pathname.includes('new')
+  const page = parseInt(props.match.params.page, 10)
+
   const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
   const first = isNewPage ? LINKS_PER_PAGE : 100
   const orderBy = isNewPage ? 'createdAt_DESC' : null
   return { first, skip, orderBy }
 }
 
-const getLinksToRender = (isNewPage, data) => {
+const getLinksToRender = (props, data) => {
+  const isNewPage = props.location.pathname.includes('new')
   if (isNewPage) {
     return data.feed.links
   }
@@ -59,30 +66,31 @@ const getLinksToRender = (isNewPage, data) => {
   return rankedLinks
 }
 
-const nextPage = (page, data, history) => {
+const nextPage = (props, data) => {
+  const page = parseInt(props.match.params.page, 10)
   if (page <= data.feed.count / LINKS_PER_PAGE) {
     const nextPage = page + 1
-    history.push(`/new/${nextPage}`)
+    props.history.push(`/new/${nextPage}`)
   }
 }
 
-const previousPage = (page, history) => {
+const previousPage = props => {
+  const page = parseInt(props.match.params.page, 10)
   if (page > 1) {
     const previousPage = page - 1
-    history.push(`/new/${previousPage}`)
+    props.history.push(`/new/${previousPage}`)
   }
 }
 
-export default ({ match, location, history }) => {
-  const isNewPage = location.pathname.includes('new')
-  const page = parseInt(match.params.page, 10)
+export default props => {
   return (
-    <Query query={FEED_QUERY} variables={getQueryVariables(page, isNewPage)}>
+    <Query query={FEED_QUERY} variables={getQueryVariables(props)}>
       {({ loading, error, data, subscribeToMore }) => {
         if (loading) return <div>Fetching</div>
         if (error) return <div>Error</div>
 
-        const linksToRender = getLinksToRender(isNewPage, data)
+        const linksToRender = getLinksToRender(props, data)
+        const isNewPage = props.location.pathname.includes('new')
 
         return (
           <LinkListSubscriptions subscribeToMore={subscribeToMore}>
@@ -91,24 +99,20 @@ export default ({ match, location, history }) => {
                 key={link.id}
                 link={link}
                 index={index}
-                updateStoreAfterVote={updateCacheAfterVote.bind(
-                  this,
-                  page,
-                  isNewPage
-                )}
+                updateStoreAfterVote={updateCacheAfterVote.bind(this, props)}
               />
             ))}
             {isNewPage && (
               <div className="flex ml4 mv3 gray">
                 <div
                   className="pointer mr2"
-                  onClick={() => previousPage(page, history)}
+                  onClick={previousPage.bind(this, props)}
                 >
                   Previous
                 </div>
                 <div
                   className="pointer"
-                  onClick={() => nextPage(page, data, history)}
+                  onClick={nextPage.bind(this, props, data)}
                 >
                   Next
                 </div>
