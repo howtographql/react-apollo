@@ -69,7 +69,7 @@ class LinkListSubscriptions extends Component {
         return Object.assign({}, prev, {
           feed: {
             links: [newLink, ...prev.feed.links],
-            count: prev.feed.links.lenght + 1,
+            count: prev.feed.links.length + 1,
             __typename: prev.feed.__typename
           }
         })
