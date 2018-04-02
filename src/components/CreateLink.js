@@ -63,7 +63,7 @@ class CreateLink extends Component {
               query: FEED_QUERY,
               variables: { first, skip, orderBy }
             })
-            data.feed.links.splice(0, 0, post)
+            data.feed.links.unshift(post)
             data.feed.links.pop()
             cache.writeQuery({
               query: FEED_QUERY,
