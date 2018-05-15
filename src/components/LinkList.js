@@ -122,6 +122,7 @@ class LinkList extends Component {
         const result = {
           ...previous,
           feed: {
+            __typename: previous.feed.__typename,
             links: newAllLinks,
           },
         }
