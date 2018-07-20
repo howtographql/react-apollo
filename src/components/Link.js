@@ -35,8 +35,8 @@ class Link extends Component {
             <Mutation
               mutation={VOTE_MUTATION}
               variables={{ linkId: link.id }}
-              update={(cache, { data: { vote } }) =>
-                updateStoreAfterVote(cache, vote, link.id)
+              update={(store, { data: { vote } }) =>
+                updateStoreAfterVote(store, vote, link.id)
               }
             >
               {voteMutation => (
