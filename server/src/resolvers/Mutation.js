@@ -6,7 +6,7 @@ function post(parent, { url, description }, ctx, info) {
   const userId = getUserId(ctx)
   return ctx.db.mutation.createLink(
     { data: { url, description, postedBy: { connect: { id: userId } } } },
-    info,
+    info
   )
 }
 
@@ -59,7 +59,7 @@ async function vote(parent, args, ctx, info) {
         link: { connect: { id: linkId } },
       },
     },
-    info,
+    info
   )
 }
 

@@ -141,16 +141,15 @@ input LinkUpdateManyWithoutPostedByInput {
   connect: [LinkWhereUniqueInput!]
   disconnect: [LinkWhereUniqueInput!]
   delete: [LinkWhereUniqueInput!]
-  update: [LinkUpdateWithoutPostedByInput!]
-  upsert: [LinkUpsertWithoutPostedByInput!]
+  update: [LinkUpdateWithWhereUniqueWithoutPostedByInput!]
+  upsert: [LinkUpsertWithWhereUniqueWithoutPostedByInput!]
 }
 
 input LinkUpdateOneWithoutVotesInput {
   create: LinkCreateWithoutVotesInput
   connect: LinkWhereUniqueInput
-  disconnect: LinkWhereUniqueInput
-  delete: LinkWhereUniqueInput
-  update: LinkUpdateWithoutVotesInput
+  delete: Boolean
+  update: LinkUpdateWithoutVotesDataInput
   upsert: LinkUpsertWithoutVotesInput
 }
 
@@ -160,32 +159,26 @@ input LinkUpdateWithoutPostedByDataInput {
   votes: VoteUpdateManyWithoutLinkInput
 }
 
-input LinkUpdateWithoutPostedByInput {
-  where: LinkWhereUniqueInput!
-  data: LinkUpdateWithoutPostedByDataInput!
-}
-
 input LinkUpdateWithoutVotesDataInput {
   description: String
   url: String
   postedBy: UserUpdateOneWithoutLinksInput
 }
 
-input LinkUpdateWithoutVotesInput {
+input LinkUpdateWithWhereUniqueWithoutPostedByInput {
   where: LinkWhereUniqueInput!
-  data: LinkUpdateWithoutVotesDataInput!
-}
-
-input LinkUpsertWithoutPostedByInput {
-  where: LinkWhereUniqueInput!
-  update: LinkUpdateWithoutPostedByDataInput!
-  create: LinkCreateWithoutPostedByInput!
+  data: LinkUpdateWithoutPostedByDataInput!
 }
 
 input LinkUpsertWithoutVotesInput {
-  where: LinkWhereUniqueInput!
   update: LinkUpdateWithoutVotesDataInput!
   create: LinkCreateWithoutVotesInput!
+}
+
+input LinkUpsertWithWhereUniqueWithoutPostedByInput {
+  where: LinkWhereUniqueInput!
+  update: LinkUpdateWithoutPostedByDataInput!
+  create: LinkCreateWithoutPostedByInput!
 }
 
 input LinkWhereInput {
@@ -403,18 +396,17 @@ input UserUpdateInput {
 input UserUpdateOneWithoutLinksInput {
   create: UserCreateWithoutLinksInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  delete: UserWhereUniqueInput
-  update: UserUpdateWithoutLinksInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutLinksDataInput
   upsert: UserUpsertWithoutLinksInput
 }
 
 input UserUpdateOneWithoutVotesInput {
   create: UserCreateWithoutVotesInput
   connect: UserWhereUniqueInput
-  disconnect: UserWhereUniqueInput
-  delete: UserWhereUniqueInput
-  update: UserUpdateWithoutVotesInput
+  delete: Boolean
+  update: UserUpdateWithoutVotesDataInput
   upsert: UserUpsertWithoutVotesInput
 }
 
@@ -425,11 +417,6 @@ input UserUpdateWithoutLinksDataInput {
   votes: VoteUpdateManyWithoutUserInput
 }
 
-input UserUpdateWithoutLinksInput {
-  where: UserWhereUniqueInput!
-  data: UserUpdateWithoutLinksDataInput!
-}
-
 input UserUpdateWithoutVotesDataInput {
   name: String
   email: String
@@ -437,19 +424,12 @@ input UserUpdateWithoutVotesDataInput {
   links: LinkUpdateManyWithoutPostedByInput
 }
 
-input UserUpdateWithoutVotesInput {
-  where: UserWhereUniqueInput!
-  data: UserUpdateWithoutVotesDataInput!
-}
-
 input UserUpsertWithoutLinksInput {
-  where: UserWhereUniqueInput!
   update: UserUpdateWithoutLinksDataInput!
   create: UserCreateWithoutLinksInput!
 }
 
 input UserUpsertWithoutVotesInput {
-  where: UserWhereUniqueInput!
   update: UserUpdateWithoutVotesDataInput!
   create: UserCreateWithoutVotesInput!
 }
@@ -600,8 +580,8 @@ input VoteUpdateManyWithoutLinkInput {
   connect: [VoteWhereUniqueInput!]
   disconnect: [VoteWhereUniqueInput!]
   delete: [VoteWhereUniqueInput!]
-  update: [VoteUpdateWithoutLinkInput!]
-  upsert: [VoteUpsertWithoutLinkInput!]
+  update: [VoteUpdateWithWhereUniqueWithoutLinkInput!]
+  upsert: [VoteUpsertWithWhereUniqueWithoutLinkInput!]
 }
 
 input VoteUpdateManyWithoutUserInput {
@@ -609,35 +589,35 @@ input VoteUpdateManyWithoutUserInput {
   connect: [VoteWhereUniqueInput!]
   disconnect: [VoteWhereUniqueInput!]
   delete: [VoteWhereUniqueInput!]
-  update: [VoteUpdateWithoutUserInput!]
-  upsert: [VoteUpsertWithoutUserInput!]
+  update: [VoteUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [VoteUpsertWithWhereUniqueWithoutUserInput!]
 }
 
 input VoteUpdateWithoutLinkDataInput {
   user: UserUpdateOneWithoutVotesInput
 }
 
-input VoteUpdateWithoutLinkInput {
-  where: VoteWhereUniqueInput!
-  data: VoteUpdateWithoutLinkDataInput!
-}
-
 input VoteUpdateWithoutUserDataInput {
   link: LinkUpdateOneWithoutVotesInput
 }
 
-input VoteUpdateWithoutUserInput {
+input VoteUpdateWithWhereUniqueWithoutLinkInput {
+  where: VoteWhereUniqueInput!
+  data: VoteUpdateWithoutLinkDataInput!
+}
+
+input VoteUpdateWithWhereUniqueWithoutUserInput {
   where: VoteWhereUniqueInput!
   data: VoteUpdateWithoutUserDataInput!
 }
 
-input VoteUpsertWithoutLinkInput {
+input VoteUpsertWithWhereUniqueWithoutLinkInput {
   where: VoteWhereUniqueInput!
   update: VoteUpdateWithoutLinkDataInput!
   create: VoteCreateWithoutLinkInput!
 }
 
-input VoteUpsertWithoutUserInput {
+input VoteUpsertWithWhereUniqueWithoutUserInput {
   where: VoteWhereUniqueInput!
   update: VoteUpdateWithoutUserDataInput!
   create: VoteCreateWithoutUserInput!
