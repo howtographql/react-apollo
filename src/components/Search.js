@@ -27,10 +27,9 @@ const FEED_SEARCH_QUERY = gql`
 `
 
 class Search extends Component {
-
   state = {
     links: [],
-    filter: ''
+    filter: '',
   }
 
   render() {
@@ -39,7 +38,7 @@ class Search extends Component {
         <div>
           Search
           <input
-            type='text'
+            type="text"
             onChange={e => this.setState({ filter: e.target.value })}
           />
           <button onClick={() => this._executeSearch()}>OK</button>

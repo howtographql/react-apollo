@@ -2,19 +2,25 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { APP_SECRET, getUserId } = require('../utils')
 
-function post(parent, { url, description }, ctx, info) {
-  const userId = getUserId(ctx)
-  return ctx.db.mutation.createLink(
-    { data: { url, description, postedBy: { connect: { id: userId } } } },
-    info
+function post(parent, args, context, info) {
+  const userId = getUserId(context)
+  return context.db.mutation.createLink(
+    {
+      data: {
+        url: args.url,
+        description: args.description,
+        postedBy: { connect: { id: userId } },
+      },
+    },
+    info,
   )
 }
 
-async function signup(parent, args, ctx, info) {
+async function signup(parent, args, context, info) {
   const password = await bcrypt.hash(args.password, 10)
-  const user = await ctx.db.mutation.createUser({
+  const user = await context.db.mutation.createUser({
     data: { ...args, password },
-  })
+  }, `{ id }`)
 
   const token = jwt.sign({ userId: user.id }, APP_SECRET)
 
@@ -24,8 +30,8 @@ async function signup(parent, args, ctx, info) {
   }
 }
 
-async function login(parent, args, ctx, info) {
-  const user = await ctx.db.query.user({ where: { email: args.email } })
+async function login(parent, args, context, info) {
+  const user = await context.db.query.user({ where: { email: args.email } }, `{ id password }`)
   if (!user) {
     throw new Error('No such user found')
   }
@@ -41,25 +47,24 @@ async function login(parent, args, ctx, info) {
   }
 }
 
-async function vote(parent, args, ctx, info) {
-  const { linkId } = args
-  const userId = getUserId(ctx)
-  const linkExists = await ctx.db.exists.Vote({
+async function vote(parent, args, context, info) {
+  const userId = getUserId(context)
+  const linkExists = await context.db.exists.Vote({
     user: { id: userId },
-    link: { id: linkId },
+    link: { id: args.linkId },
   })
   if (linkExists) {
-    throw new Error(`Already voted for link: ${linkId}`)
+    throw new Error(`Already voted for link: ${args.linkId}`)
   }
 
-  return ctx.db.mutation.createVote(
+  return context.db.mutation.createVote(
     {
       data: {
         user: { connect: { id: userId } },
-        link: { connect: { id: linkId } },
+        link: { connect: { id: args.linkId } },
       },
     },
-    info
+    info,
   )
 }
 
@@ -67,5 +72,5 @@ module.exports = {
   post,
   signup,
   login,
-  vote,
+  vote
 }

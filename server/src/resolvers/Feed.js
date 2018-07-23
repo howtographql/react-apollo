@@ -1,6 +1,5 @@
 function links(parent, args, context, info) {
-  const { linkIds } = parent
-  return context.db.query.links({ where: { id_in: linkIds } }, info)
+  return context.db.query.links({ where: { id_in: parent.linkIds } }, info)
 }
 
 module.exports = {
