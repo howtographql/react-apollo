@@ -1,4 +1,3 @@
-endpoint: __PRISMA_ENDPOINT__
 datamodel: datamodel.graphql
 secret: mysecret123
 hooks:
