@@ -18,13 +18,11 @@ yarn install
 yarn prisma deploy
 ```
 
-When prompted where (i.e. to which _cluster_) you want to deploy your service, choose any of the public clusters, e.g. `public-us1` or `public-eu1`. (If you have Docker installed, you can also deploy locally.)
-
-> **Note**: This repository uses a slightly outdated version of the Prisma CLI and will be updated soon to use the [latest release](https://www.prisma.io/docs/reference/upgrade-guides/upgrading-prisma/upgrade-to-1.7-iquaecuj6b).
+When prompted where (i.e. to which _Prisma server_) you want to deploy your service, choose the **Demo server** which can be used for free in Prisma Cloud. If you haven't done so already, you will be asked to register with Prisma Cloud (which you can do via GitHub). For the following prompts in the terminal you can select the suggested values by hitting **Enter**. (If you have Docker installed, you can also choose to deploy Prisma locally by _Creating a new database_.)
 
 ### 3. Set the Prisma API endpoint
 
-From the output of the previous command, copy the `HTTP` endpoint and paste it into `server/src/index.js` where it's used to instantiate the `Prisma` binding. You need to replace the current placeholder `__PRISMA_ENDPOINT__`:
+The `prisma deploy` command wrote the endpoint property into `server/database/prisma.yml`. Copy it from there and paste it into `server/src/index.js` where it's used to instantiate the `Prisma` binding. You need to replace the current placeholder `__PRISMA_ENDPOINT__`:
 
 ```js
 const server = new GraphQLServer({
@@ -51,21 +49,18 @@ const server = new GraphQLServer({
     ...req,
     db: new Prisma({
       typeDefs: 'src/generated/prisma.graphql',
-      endpoint: 'https://eu1.prisma.sh/public-hillcloak-flier-942261/hackernews-graphql-js/dev',
+      endpoint: 'https://eu1.prisma.sh/john-doe/hackernews-graphql-js/dev',
       secret: 'mysecret123',
     }),
   }),
 })
 ```
 
-Note that the part `public-hillcloak-flier-952361` of the URL is unique to your Prisma API.
-
 ### 4. Start the server
 
-To start the server, all you need to do is install the the dependencies execute the `start` script by running the following command inside the `server` directory:
+To start the server, all you need to do is execute the `start` script by running the following command inside the `server` directory:
 
 ```sh
-yarn install
 yarn start
 ```
 
