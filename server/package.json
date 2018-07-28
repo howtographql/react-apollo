@@ -12,13 +12,13 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "graphql-yoga": "^1.7.0",
-    "jsonwebtoken": "^8.2.0",
-    "prisma-binding": "^2.0.2"
+    "graphql-yoga": "^1.14.12",
+    "jsonwebtoken": "^8.3.0",
+    "prisma-binding": "^2.1.1"
   },
   "devDependencies": {
     "graphql-cli": "^2.16.4",
     "npm-run-all": "^4.1.2",
-    "prisma": "^1.9.0"
+    "prisma": "^1.12.0"
   }
 }
