@@ -2,25 +2,18 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { APP_SECRET, getUserId } = require('../utils')
 
-function post(parent, args, context, info) {
+function post(parent, args, context) {
   const userId = getUserId(context)
-  return context.db.mutation.createLink(
-    {
-      data: {
-        url: args.url,
-        description: args.description,
-        postedBy: { connect: { id: userId } },
-      },
-    },
-    info,
-  )
+  return context.prisma.createLink({
+    url: args.url,
+    description: args.description,
+    postedBy: { connect: { id: userId } },
+  })
 }
 
-async function signup(parent, args, context, info) {
+async function signup(parent, args, context) {
   const password = await bcrypt.hash(args.password, 10)
-  const user = await context.db.mutation.createUser({
-    data: { ...args, password },
-  }, `{ id }`)
+  const user = await context.prisma.createUser({ ...args, password })
 
   const token = jwt.sign({ userId: user.id }, APP_SECRET)
 
@@ -30,8 +23,8 @@ async function signup(parent, args, context, info) {
   }
 }
 
-async function login(parent, args, context, info) {
-  const user = await context.db.query.user({ where: { email: args.email } }, `{ id password }`)
+async function login(parent, args, context) {
+  const user = await context.prisma.user({ email: args.email })
   if (!user) {
     throw new Error('No such user found')
   }
@@ -47,9 +40,9 @@ async function login(parent, args, context, info) {
   }
 }
 
-async function vote(parent, args, context, info) {
+async function vote(parent, args, context) {
   const userId = getUserId(context)
-  const linkExists = await context.db.exists.Vote({
+  const linkExists = await context.prisma.$exists.vote({
     user: { id: userId },
     link: { id: args.linkId },
   })
@@ -57,20 +50,15 @@ async function vote(parent, args, context, info) {
     throw new Error(`Already voted for link: ${args.linkId}`)
   }
 
-  return context.db.mutation.createVote(
-    {
-      data: {
-        user: { connect: { id: userId } },
-        link: { connect: { id: args.linkId } },
-      },
-    },
-    info,
-  )
+  return context.prisma.createVote({
+    user: { connect: { id: userId } },
+    link: { connect: { id: args.linkId } },
+  })
 }
 
 module.exports = {
   post,
   signup,
   login,
-  vote
+  vote,
 }
