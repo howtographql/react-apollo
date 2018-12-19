@@ -1,30 +1,27 @@
 const { GraphQLServer } = require('graphql-yoga')
-const { Prisma } = require('prisma-binding')
+const { prisma } = require('./generated/prisma-client')
 const Query = require('./resolvers/Query')
 const Mutation = require('./resolvers/Mutation')
-const AuthPayload = require('./resolvers/AuthPayload')
 const Subscription = require('./resolvers/Subscription')
-const Feed = require('./resolvers/Feed')
+const User = require('./resolvers/User')
+const Link = require('./resolvers/Link')
+const Vote = require('./resolvers/Vote')
 
 const resolvers = {
   Query,
   Mutation,
-  AuthPayload,
   Subscription,
-  Feed
+  User,
+  Link,
+  Vote,
 }
 
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
   resolvers,
-  context: req => ({
-    ...req,
-    db: new Prisma({
-      typeDefs: 'src/generated/prisma.graphql',
-      endpoint: '__PRISMA_ENDPOINT__',
-      secret: 'mysecret123',
-      debug: true,
-    }),
+  context: request => ({
+    ...request,
+    prisma,
   }),
 })
 server.start(() => console.log(`Server is running on http://localhost:4000`))
