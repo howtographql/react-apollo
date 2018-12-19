@@ -6,8 +6,12 @@ type Query {
 }
 
 enum LinkOrderByInput {
-  ASC
-  DESC
+  description_ASC
+  description_DESC
+  url_ASC
+  url_DESC
+  createdAt_ASC
+  createdAt_DESC
 }
 
 type Feed {
