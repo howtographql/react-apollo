@@ -31,7 +31,29 @@ export const FEED_QUERY = gql`
 const NEW_LINKS_SUBSCRIPTION = gql`
   subscription {
     newLink {
-      node {
+      id
+      url
+      description
+      createdAt
+      postedBy {
+        id
+        name
+      }
+      votes {
+        id
+        user {
+          id
+        }
+      }
+    }
+  }
+`
+
+const NEW_VOTES_SUBSCRIPTION = gql`
+  subscription {
+    newVote {
+      id
+      link {
         id
         url
         description
@@ -47,34 +69,8 @@ const NEW_LINKS_SUBSCRIPTION = gql`
           }
         }
       }
-    }
-  }
-`
-
-const NEW_VOTES_SUBSCRIPTION = gql`
-  subscription {
-    newVote {
-      node {
+      user {
         id
-        link {
-          id
-          url
-          description
-          createdAt
-          postedBy {
-            id
-            name
-          }
-          votes {
-            id
-            user {
-              id
-            }
-          }
-        }
-        user {
-          id
-        }
       }
     }
   }
@@ -103,7 +99,7 @@ class LinkList extends Component {
       document: NEW_LINKS_SUBSCRIPTION,
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev
-        const newLink = subscriptionData.data.newLink.node
+        const newLink = subscriptionData.data.newLink
 
         return Object.assign({}, prev, {
           feed: {
