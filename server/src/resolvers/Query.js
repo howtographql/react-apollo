@@ -1,5 +1,5 @@
 async function feed(parent, args, context) {
-  const count = await context.prisma
+  const { count } = await context.prisma
     .linksConnection({
       where: {
         OR: [
@@ -9,7 +9,6 @@ async function feed(parent, args, context) {
       },
     })
     .aggregate()
-    .count()
   const links = await context.prisma.links({
     where: {
       OR: [
