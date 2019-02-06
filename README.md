@@ -12,10 +12,16 @@ git clone https://github.com/howtographql/react-apollo/
 
 ### 2. Install dependencies & Deploy the Prisma database API
 
+To install the Prisma CLI globally with Yarn, use the following command:
+```sh
+yarn global add prisma
+```
+
+Also, run the following commands:
 ```sh
 cd react-apollo/server
 yarn install
-yarn prisma deploy
+prisma deploy
 ```
 
 Then, follow these steps in the interactive CLI wizard:
