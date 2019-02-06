@@ -1,9 +1,3 @@
-type Vote {
-  id: ID! @unique
-  link: Link!  
-  user: User!
-}
-
 type Link {
   id: ID! @unique
   createdAt: DateTime!
@@ -20,4 +14,10 @@ type User {
   password: String!
   links: [Link!]!
   votes: [Vote!]!
+}
+
+type Vote {
+  id: ID! @unique
+  link: Link!
+  user: User!
 }

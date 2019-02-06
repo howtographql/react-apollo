@@ -1,17 +1,29 @@
-async function feed(parent, args, ctx, info) {
-  const { filter, first, skip } = args // destructure input arguments
-  const where = filter
-    ? { OR: [{ url_contains: filter }, { description_contains: filter }] }
-    : {}
-
-  const allLinks = await ctx.db.query.links({})
-  const count = allLinks.length
-
-  const queriedLinkes = await ctx.db.query.links({ first, skip, where })
-
+async function feed(parent, args, context) {
+  const count = await context.prisma
+    .linksConnection({
+      where: {
+        OR: [
+          { description_contains: args.filter },
+          { url_contains: args.filter },
+        ],
+      },
+    })
+    .aggregate()
+    .count()
+  const links = await context.prisma.links({
+    where: {
+      OR: [
+        { description_contains: args.filter },
+        { url_contains: args.filter },
+      ],
+    },
+    skip: args.skip,
+    first: args.first,
+    orderBy: args.orderBy,
+  })
   return {
-    linkIds: queriedLinkes.map(link => link.id),
-    count
+    count,
+    links,
   }
 }
 
