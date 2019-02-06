@@ -2,7 +2,7 @@
 
 This is the sample project that belongs to the [React & Apollo Tutorial](https://www.howtographql.com/react-apollo/0-introduction/) on How to GraphQL.
 
-## Running the App
+## How to use
 
 ### 1. Clone repository
 
@@ -10,71 +10,76 @@ This is the sample project that belongs to the [React & Apollo Tutorial](https:/
 git clone https://github.com/howtographql/react-apollo/
 ```
 
-### 2. Deploy the Prisma database service
+### 2. Install dependencies & Deploy the Prisma database API
 
 ```sh
 cd react-apollo/server
+yarn install
 yarn prisma deploy
 ```
 
-When prompted where (i.e. to which _cluster_) you want to deploy your service, choose any of the public clusters, e.g. `public-us1` or `public-eu1`. (If you have Docker installed, you can also deploy locally.)
+Then, follow these steps in the interactive CLI wizard:
 
-### 3. Set the Prisma service endpoint
+1. Select **Demo server**
+1. **Authenticate** with Prisma Cloud in your browser (if necessary)
+1. Back in your terminal, **confirm all suggested values**
 
-From the output of the previous command, copy the `HTTP` endpoint and paste it into `server/src/index.js` where it's used to instantiate the `Prisma` binding. You need to replace the current placeholder `__PRISMA_ENDPOINT__`:
+<details>
+ <summary>Alternative: Run Prisma locally via Docker</summary>
 
-```js
-const server = new GraphQLServer({
-  typeDefs: './src/schema.graphql',
-  resolvers,
-  context: req => ({
-    ...req,
-    db: new Prisma({
-      typeDefs: 'src/generated/prisma.graphql',
-      endpoint: '__PRISMA_ENDPOINT__',
-      secret: 'mysecret123',
-    }),
-  }),
-})
+1. Ensure you have Docker installed on your machine. If not, you can get it from [here](https://store.docker.com/search?offering=community&type=edition).
+1. Create `docker-compose.yml` for MySQL (see [here](https://www.prisma.io/docs/prisma-server/database-connector-POSTGRES-jgfr/) for Postgres):
+    ```yml
+    version: '3'
+    services:
+      prisma:
+        image: prismagraphql/prisma:1.23
+        restart: always
+        ports:
+        - "4466:4466"
+        environment:
+          PRISMA_CONFIG: |
+            port: 4466
+            databases:
+              default:
+                connector: mysql
+                host: mysql
+                port: 3306
+                user: root
+                password: prisma
+                migrations: true
+      mysql:
+        image: mysql:5.7
+        restart: always
+        environment:
+          MYSQL_ROOT_PASSWORD: prisma
+        volumes:
+          - mysql:/var/lib/mysql
+    volumes:
+      mysql:
+    ```
+1. Run `docker-compose up -d`
+1. Run `prisma deploy`
+
+</details>
+
+### 3. Start the server
+
+To start the server, all you need to do is execute the `start` script by running the following command inside the `server` directory:
+
+```sh
+yarn start
 ```
 
-For example:
+> **Note**: If you want to interact with the GraphQL API of the server inside a [GraphQL Playground](https://github.com/prisma/graphql-playground), you can navigate to [http://localhost:4000](http://localhost:4000).
 
-```js
-const server = new GraphQLServer({
-  typeDefs: './src/schema.graphql',
-  resolvers,
-  context: req => ({
-    ...req,
-    db: new Prisma({
-      typeDefs: 'src/generated/prisma.graphql',
-      endpoint: 'https://eu1.prisma.sh/public-hillcloak-flier-942261/hackernews-graphql-js/dev',
-      secret: 'mysecret123',
-    }),
-  }),
-})
-```
+### 4. Run the app
 
-Note that the part `public-hillcloak-flier-952361` of the URL is unique to your service.
-
-### 4. Start the server
-
-To start the server, all you need to do is install the the dependencies execute the `start` script by running the following command inside the `server` directory:
+Now that the server is running, you can start the React app as well. The commands need to be run in a new terminal tab/window inside the root directory `react-apollo` (because the current tab is blocked by the process running the server):
 
 ```sh
 yarn install
 yarn start
 ```
 
-> **Note**: If you want to interact with the GraphQL APIs inside a [GraphQL Playground](https://github.com/graphcool/graphql-playground), you can also run `yarn dev`.
-
-### 5. Run the app
-
-Now that the server is running, you can start the app as well. The commands need to be run in a new terminal tab/window inside the root directory `react-apollo` (because the current tab is blocked by the process running the server):
-
-```sh
-yarn install
-yarn start
-```
-
-You can now open your browser and use the app on `http://localhost:3000`.
+You can now open your browser and use the app on [http://localhost:3000](http://localhost:3000).

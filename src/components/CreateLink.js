@@ -18,7 +18,7 @@ const POST_MUTATION = gql`
 class CreateLink extends Component {
   state = {
     description: '',
-    url: ''
+    url: '',
   }
 
   render() {
@@ -51,13 +51,13 @@ class CreateLink extends Component {
             const orderBy = 'createdAt_DESC'
             const data = store.readQuery({
               query: FEED_QUERY,
-              variables: { first, skip, orderBy }
+              variables: { first, skip, orderBy },
             })
             data.feed.links.unshift(post)
             store.writeQuery({
               query: FEED_QUERY,
               data,
-              variables: { first, skip, orderBy }
+              variables: { first, skip, orderBy },
             })
           }}
         >

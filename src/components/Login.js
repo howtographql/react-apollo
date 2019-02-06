@@ -24,7 +24,7 @@ class Login extends Component {
     login: true, // switch between Login and SignUp
     email: '',
     password: '',
-    name: ''
+    name: '',
   }
 
   render() {
