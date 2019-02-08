@@ -4,6 +4,12 @@ ifeq (${UNAME}, Windows_NT)
 PROJ_NAME += @echo $(shell basename $(pwd))
 endif
 
+
+.PHONY: dev
+dev:
+	yarn dev
+
+
 .PHONY: create-server
 create-server:
 	doctl compute droplet create $(PROJ_NAME)-server --size 1gb --image ubuntu-18-04-x64 --region nyc1 --ssh-keys ${DOFP} -t ${DOAT} --tag-names $(PROJ_NAME),$(PROJ_NAME)-server
