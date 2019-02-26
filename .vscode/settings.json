@@ -3,6 +3,7 @@
     "__error": "Not found",
     "node_modules": true,
     "build": true,
-    "yarn.lock": true
+    "yarn.lock": true,
+    "*workspace": true,
   }
 }
