@@ -1,5 +1,6 @@
-PROJ_NAME = eggshell
-
+PROJ_NAME = eggshell 
+PORT = 3500
+ 
 .PHONY: create-server
 create-server:
 	doctl compute droplet create ${PROJ_NAME}-server --size 1gb --image ubuntu-18-04-x64 --region nyc1 --ssh-keys ${DOFP} -t ${DOAT} --tag-names ${PROJ_NAME},${PROJ_NAME}-server
@@ -35,12 +36,8 @@ stop-old:
 	docker kill ${PROJ_NAME}
 
 .PHONY: deploy
-deploy: build-prod
-	docker run --name ${PROJ_NAME} -p 3500:3000 -d ${PROJ_NAME} 
-
-.PHONY: kill-and-deploy
-kill-and-deploy: delete-old build-prod
-
+deploy: build-prod delete-old
+	docker run --name ${PROJ_NAME} -p ${PORT}:3000 -d ${PROJ_NAME} 
 
 .PHONY: create-machine
 create-machine:
