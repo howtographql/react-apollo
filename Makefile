@@ -1,4 +1,8 @@
-PROJ_NAME = eggshell 
+pwd := $(shell pwd)
+PROJ_NAME :=
+ifeq (${UNAME}, Windows_NT)
+PROJ_NAME += @echo $(shell basename $(pwd))
+endif
 PORT = 3500
  
 .PHONY: create-server
@@ -26,7 +30,7 @@ build-prod-webpack:
 
 .PHONY: build-prod-docker
 build-prod-docker: 
-	docker build . -t ${PROJ_NAME}
+	docker build . -t $(PROJ_NAME)
 
 .PHONY: build-prod
 build-prod: build-prod-webpack build-prod-docker
