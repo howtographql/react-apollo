@@ -1,8 +1,5 @@
 pwd := $(shell pwd)
-PROJ_NAME :=
-ifeq (${UNAME}, Windows_NT)
-PROJ_NAME += @echo $(shell basename $(pwd))
-endif
+PROJ_NAME = $(shell basename $(pwd))
 PORT = 3500
  
 .PHONY: create-server
@@ -16,6 +13,15 @@ delete-server:
 
 SERVER_IP = ${shell doctl compute droplet list --tag-name ${PROJ_NAME}-server --format "PublicIPv4" -t ${DOAT} | tail -n +2}
 
+ifeq (${OS}, Windows_NT)
+DOCKER_TLS_VERIFY="1"
+DOCKER_HOST = tcp://${SERVER_IP}:2376
+DOCKER_CERT_PATH = ${HOME}/.docker/machine/machines/${PROJ_NAME}
+DOCKER_MACHINE_NAME = ${PROJ_NAME}
+COMPOSE_CONVERT_WINDOWS_PATHS = "true"
+endif
+
+
 .PHONY: server-ip
 server-ip:
 	@echo ${SERVER_IP}
@@ -26,11 +32,16 @@ delete-old: stop-old
 
 .PHONY: build-prod-webpack
 build-prod-webpack:
-	rm -rf build/* && yarn build
+	rm -rf build/*
+	yarn build
+	cp -r build dist
+	cp -r public dist
+	cp -r src dist
+
 
 .PHONY: build-prod-docker
 build-prod-docker: 
-	docker build . -t $(PROJ_NAME)
+	docker build dist -t $(PROJ_NAME) -f Dockerfile
 
 .PHONY: build-prod
 build-prod: build-prod-webpack build-prod-docker
@@ -50,3 +61,6 @@ create-machine:
 .PHONY: remove-machine
 remove-machine:
 	docker-machine rm ${PROJ_NAME}
+
+.PHONY: use
+use:

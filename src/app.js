@@ -10,11 +10,8 @@ export class App extends React.Component {
         Title
       </h1>
     </div>
-
   }
 }
-
-
 
 export function renderInput(field) {
   return <input value={form_info[field]} onChange={handleChange(field)} required />
