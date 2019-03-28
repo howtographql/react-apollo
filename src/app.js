@@ -7,7 +7,7 @@ export class App extends React.Component {
   render() {
     return <div>
       <h1>
-        Title
+        Eggshell
       </h1>
     </div>
   }

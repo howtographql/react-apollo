@@ -1,17 +1,8 @@
 {
   "files.exclude": {
-<<<<<<< HEAD
-    "__error": false,
-    "node_modules": true,
-    "yarn.lock": false,
-    "**/.git": false
-}
-=======
     "__error": "Not found",
-    "node_modules": true,
+    "dist": true,
     "build": true,
-    "yarn.lock": true,
-    "*workspace": true,
+    "node_modules": true
   }
->>>>>>> 944f040d123f39bed4bec94f752edd72c41c73bb
 }
