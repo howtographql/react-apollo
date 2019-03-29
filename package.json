@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:server": "babel-node ./src/server",
-    "dev:client": "webpack --watch --config webpack/dev",
+    "dev:client": "webpack --watch",
     "dev": "npm-run-all --parallel dev:server dev:client",
     "prod:server": "babel-node ./src/server",
-    "build": "webpack --config webpack/prod",
+    "build": "webpack -p --devtool none",
     "prod": "npm-run-all --parallel prod:server prod:client"
   },
   "keywords": [],

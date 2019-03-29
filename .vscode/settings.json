@@ -2,7 +2,11 @@
   "files.exclude": {
     "__error": "Not found",
     "dist": true,
+    "node_modules": true,
+    "yarn-error.log": true,
+    "workspace.code-workspace": true,
+    "yarn.lock": true,
     "build": true,
-    "node_modules": true
+    ".vscode": true
   }
 }
