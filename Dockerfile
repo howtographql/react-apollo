@@ -4,7 +4,7 @@ COPY ./package.json .
 COPY ./yarn.lock .
 RUN yarn install --no-progress
 COPY ./build ./build
-COPY ./src/server.js ./server.js
+COPY ./build/server.js ./server.js
 COPY ./public ./public
 USER node
 CMD node server.js
