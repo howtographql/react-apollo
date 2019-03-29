@@ -2,20 +2,35 @@ import { useFormState } from 'react-use-form-state'
 import React from 'react'
 
 export function Form() {
-    const [formState, { text, email, password, radio }] = useFormState()
+    const [formState, { label, text, email, password, radio }] = useFormState()
+    const redLabel = (...args) => {
+        const field = args.slice(0, args.length - 1)
+        const label_text = args[args.length - 1]
+        return <label {...label(...field)}><span style={{color: formState.touched[field] && !formState.validity[field] ? 'red' : 'black'}}>{label_text}</span></label>
+    }
 
     return <form onSubmit={e => e.preventDefault() || console.log(formState)}>
-        Name: <input {...text('name')} />
+        {redLabel('name', 'Full Name')}
+        <input {...text('name')} />
         <br />
-        <span style={{color: formState.touched.email && !formState.validity.email ? 'red' : 'black'}}>Email</span>: <input {...email('email')} />
+
+        {redLabel('email', "Email")}
+        <input {...email('email')} />
         <br />
-        Password: <input {...password('password')} required minLength="8" />
+
+        {redLabel('password', 'Password')}
+        <input {...password('password')} required minLength="8" />
         <br />
+
         Plan:
         <br />
-        Free <input {...radio('plan', 'free')} />
+        
+        {redLabel('plan', 'free', 'Free Plan')}
+        <input {...radio('plan', 'free')} />
         <br />
-        Premium: <input {...radio('plan', 'premium')} />
+        {redLabel('plan', 'free', 'Premium Plan')}
+        <input {...radio('plan', 'premium')} />
+        <br />
         <button type="submit">Submit</button>
     </form>
 }

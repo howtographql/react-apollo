@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Form } from './form'
+import { Form } from './sample/form'
 
 export function App() {
   return <div>
