@@ -42,6 +42,5 @@
     "react-form-state": "^0.3.0",
     "react-router-dom": "^5.0.0",
     "react-use-form-state": "^0.9.0",
-    "terser": "^3.14.1"
   }
 }
