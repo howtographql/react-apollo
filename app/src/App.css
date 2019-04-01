@@ -1,0 +1,76 @@
+.app {
+  height: 100vh;
+}
+
+.app p {
+  text-align: center;
+  font-size: 24px;
+}
+
+.count-form {
+  display: flex;
+  justify-content: center;
+  padding: 60px;
+}
+
+.count-form input {
+  border: none;
+  padding: 20px;
+  font-size: 24px;
+  border-radius: 4px;
+  background: #e6e9ed;
+}
+
+.count-form button {
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 20px;
+  font-size: 24px;
+  border-radius: 4px;
+  color: white;
+  background: #e10098;
+}
+
+.item-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item-list li {
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.item-list li + li {
+  margin-top: 10px;
+}
+
+.item-list li::before {
+  position: absolute;
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin-left: -40px;
+  content: "";
+  border: 2px solid black;
+  border-radius: 4px;
+}
+
+.item-list li.item-complete {
+  text-decoration: line-through;
+}
+
+.item-list li.item-complete::before {
+  text-align: center;
+  line-height: 24px;
+  content: "X";
+}
