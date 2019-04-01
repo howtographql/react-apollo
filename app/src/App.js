@@ -1,110 +1,38 @@
 // App.js
-import React, { Component } from "react";
+import React from "react";
 import "./App.css";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Home } from './pages/Home';
+import { Users } from './pages/Users';
+import { About } from './pages/About';
+import { Todo } from './pages/Todo';
 
-import Query from "./Query";
-import Mutation from './Mutation';
 
-class App extends Component {
-  state = { count: "3" };
-
-  handleCountChange = e => {
-    this.setState({ count: e.target.value });
-  };
-
-  handleSubmit = e => {
-    e.preventDefault();
-
-    this.fetchData();
-  };
-
-  render() {
-    return (
-      <Query
-        query={`
-          query($count: Int) {
-            todoItems(first: $count) {
-              id
-              text
-              completed
-            }
-          }
-        `}
-        variables={{
-          count: parseInt(this.state.count)
-        }}
-      >
-        {({ refetch, loading, error, data }) => (
-          <div className="app">
-            <form
-              className="count-form"
-              onSubmit={e => {
-                e.preventDefault();
-
-                refetch();
-              }}
-            >
-              <input
-                type="number"
-                value={this.state.count}
-                onChange={this.handleCountChange}
-              />
-              <button type="submit">Submit</button>
-            </form>
-            <div className="item-list-container">
-              <h1>To-do items:</h1>
-              {error && <p>{error.message}</p>}
-              {loading && <p>Loading...</p>}
-              {data && (
-                <ul className="item-list">
-                  {data.todoItems.map(todoItem => (
-                    <Mutation
-                      mutation={`
-                        mutation(
-                          $where: TodoItemWhereUniqueInput!
-                          $data: TodoItemUpdateInput!
-                        ) {
-                          updateTodoItem(where: $where, data: $data) {
-                            id
-                            text
-                            completed
-                          }
-                        }
-                      `}
-                      key={todoItem.id}
-                    >
-                      {({ mutate, data }) => {
-                        const mutationResultExists = Boolean(data);
-                        const completed = mutationResultExists
-                          ? data.updateTodoItem.completed
-                          : todoItem.completed;
-
-                        return (
-                          <li
-                            className={
-                              completed ? "item-complete" : "item-incomplete"
-                            }
-                            onClick={() =>
-                              mutate({
-                                where: { id: todoItem.id },
-                                data: { completed: !completed,}
-                              })
-                            }
-                          >
-                            {todoItem.text}
-                          </li>
-                        );
-                      }}
-                    </Mutation>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        )}
-      </Query>
-    );
-  }
+function App() {
+  return <Router>
+    <div>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/about">About</Link>
+          </li>
+          <li>
+            <Link to="/users">Users</Link>
+          </li>
+          <li>
+            <Link to="/todo">Todo</Link>
+          </li>
+        </ul>
+      </nav>
+      <Route path="/" exact component={Home} />
+      <Route path="/about" exact component={About} />
+      <Route path="/users" exact component={Users} />
+      <Route path="/todo" exact component={Todo} />
+    </div>
+  </Router>
 }
 
 export default App;

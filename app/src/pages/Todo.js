@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import "./App.css";
+import "./Todo.css";
 
 import Query from "./Query";
-import Mutation from "./Mutation";
+import Mutation from './Mutation';
 
-class App extends Component {
+export class Todo extends Component {
   state = { count: "3" };
 
   handleCountChange = e => {
@@ -86,7 +86,7 @@ class App extends Component {
                             onClick={() =>
                               mutate({
                                 where: { id: todoItem.id },
-                                data: { completed: !completed }
+                                data: { completed: !completed,}
                               })
                             }
                           >
@@ -105,5 +105,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;
