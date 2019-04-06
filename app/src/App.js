@@ -6,6 +6,8 @@ import { Home } from './pages/Home';
 import { Users } from './pages/Users';
 import { About } from './pages/About';
 import { Todo } from './pages/Todo';
+import { SignUp } from "./pages/SignUp";
+import { SignIn } from './pages/SignIn';
 
 
 function App() {
@@ -16,21 +18,29 @@ function App() {
           <li>
             <Link to="/">Home</Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/about">About</Link>
           </li>
           <li>
             <Link to="/users">Users</Link>
-          </li>
+          </li> */}
           <li>
             <Link to="/todo">Todo</Link>
+          </li>
+          <li>
+            <Link to="/sign-in">Sign In</Link>
+          </li>
+          <li>
+            <Link to="/sign-up">Sign Up</Link>
           </li>
         </ul>
       </nav>
       <Route path="/" exact component={Home} />
-      <Route path="/about" exact component={About} />
-      <Route path="/users" exact component={Users} />
-      <Route path="/todo" exact component={Todo} />
+      <Route path="/about" component={About} />
+      <Route path="/users" component={Users} />
+      <Route path="/todo" component={Todo} />
+      <Route path="/sign-up" component={SignUp} />
+      <Route path="/sign-in" component={SignIn} />
     </div>
   </Router>
 }

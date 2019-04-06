@@ -7903,6 +7903,11 @@ react-scripts@2.1.1:
   optionalDependencies:
     fsevents "1.2.4"
 
+react-use-form-state@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/react-use-form-state/-/react-use-form-state-0.9.0.tgz#bdb47c14bf0bce530be25de46da92ccaf37b79c4"
+  integrity sha512-WPLv5W/aYTcqeXj11TdeSvfuyjU/MUYr4aCx13XzZeQJ3Q5Vtv9egFrF2GpiiBtBYN0ywXRBWr3vu9ZZ5P3PRA==
+
 react@^16.6.3:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react/-/react-16.8.6.tgz#ad6c3a9614fd3a4e9ef51117f54d888da01f2bbe"
