@@ -23,7 +23,7 @@ const VOTE_MUTATION = gql`
   }
 `
 
-export function Link(props) {
+function Link(props) {
   const authToken = localStorage.getItem(AUTH_TOKEN)
 
   return (
@@ -61,3 +61,5 @@ export function Link(props) {
     </div>
   )
 }
+
+export default Link

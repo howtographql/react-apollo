@@ -15,7 +15,7 @@ const POST_MUTATION = gql`
   }
 `
 
-export function CreateLink() {
+function CreateLink() {
   const [description, setDescription] = useState()
   const [url, setUrl] = useState()
 
@@ -62,3 +62,5 @@ export function CreateLink() {
     </div>
   )
 }
+
+export default CreateLink

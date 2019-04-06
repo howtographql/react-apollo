@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from './Link'
+import Link from './Link'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import { LINKS_PER_PAGE } from '../constants'
@@ -76,7 +76,7 @@ const NEW_VOTES_SUBSCRIPTION = gql`
   }
 `
 
-export function LinkList(props) {
+function LinkList(props) {
   const _updateCacheAfterVote = (store, createVote, linkId) => {
     const isNewPage = props.location.pathname.includes('new')
     const page = parseInt(props.match.params.page, 10)
@@ -195,3 +195,5 @@ export function LinkList(props) {
     </Query>
   )
 }
+
+export default LinkList

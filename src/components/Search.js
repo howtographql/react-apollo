@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Link } from './Link'
+import Link from './Link'
 
 const FEED_SEARCH_QUERY = gql`
   query FeedSearchQuery($filter: String!) {
@@ -26,7 +26,7 @@ const FEED_SEARCH_QUERY = gql`
   }
 `
 
-export function Search(props) {
+function Search(props) {
   const [links, setLinks] = useState([])
   const [filter, setFilter] = useState('')
 

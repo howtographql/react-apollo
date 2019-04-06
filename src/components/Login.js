@@ -20,7 +20,7 @@ const LOGIN_MUTATION = gql`
   }
 `
 
-export function Login(props) {
+function Login(props) {
   const [login, setLogin] = useState()
   const [formState, { text, email, password }] = useFormState()
   const _confirm = async data => {
@@ -65,3 +65,5 @@ export function Login(props) {
     </div>
   )
 }
+
+export default Login
