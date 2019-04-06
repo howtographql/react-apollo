@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { LinkList } from './LinkList'
-import CreateLink from './CreateLink'
+import { CreateLink } from './CreateLink'
 import Header from './Header'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { Login } from './Login'
