@@ -1,8 +1,18 @@
 {
-  "name": "server",
-  "version": "0.1.0",
-  "private": true,
+  "name": "hackernews-node",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/index.js",
+    "prisma": "prisma"
+  },
   "dependencies": {
-    "react-router-dom": "^5.0.0"
+    "bcryptjs": "^2.4.3",
+    "graphql-yoga": "^1.7.0",
+    "jsonwebtoken": "^8.2.0",
+    "prisma-client-lib": "^1.22.2"
+  },
+  "devDependencies": {
+    "prisma": "^1.23.0"
   }
 }

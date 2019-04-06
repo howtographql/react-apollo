@@ -10,8 +10,6 @@
     ".vscode": true,
     "app\\node_modules": true,
     "server\\yarn.lock": true,
-    "app\\yarn.lock": true,
-    "app-final\\yarn.lock": true,
     "server\\node_modules": true
   }
 }
