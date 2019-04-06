@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import LinkList from './LinkList'
+import { LinkList } from './LinkList'
 import CreateLink from './CreateLink'
 import Header from './Header'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import Login from './Login'
+import { Login } from './Login'
 import Search from './Search'
+import '../styles/App.css'
 
 class App extends Component {
   render() {
