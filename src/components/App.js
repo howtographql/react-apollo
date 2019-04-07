@@ -10,9 +10,9 @@ import SignUp from './Sign/SignUp';
 
 function App() {
   return (
-    <div className="center w85">
+    <div>
       <Header />
-      <div className="ph3 pv1 background-gray">
+      <div>
         <Switch>
           <Route exact path="/" render={() => <Redirect to="/new/1" />} />
           <Route exact path="/create" component={CreateLink} />
