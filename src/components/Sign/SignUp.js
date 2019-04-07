@@ -67,7 +67,7 @@ function SignUp(props) {
         <Avatar className={classes.avatar}>
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign Up
         </Typography>
         <form className={classes.form}>
         <FormControl margin="normal" required fullWidth>
