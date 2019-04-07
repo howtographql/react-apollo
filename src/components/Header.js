@@ -41,8 +41,8 @@ function Header(props) {
             logout
           </div>
         ) : (
-            <Link to="/login" className="ml1 no-underline black">
-              login
+            <Link to="/sign-in" className="ml1 no-underline black">
+              Sign In/Sign Up
           </Link>
           )}
       </div>

@@ -1,4 +1,0 @@
-endpoint: http://192.168.99.100:4466
-datamodel: datamodel.prisma
-seed:
-  import: seed.graphql

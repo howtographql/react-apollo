@@ -1,5 +1,0 @@
-type TodoItem {
-  id: ID! @unique
-  text: String!
-  completed: Boolean!
-}

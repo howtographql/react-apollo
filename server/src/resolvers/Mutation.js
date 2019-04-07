@@ -22,7 +22,7 @@ async function signup(parent, args, context) {
   }
 }
 
-async function login(parent, args, context) {
+async function signin(parent, args, context) {
   const user = await context.prisma.user({ email: args.email })
   if (!user) {
     throw new Error('No such user found')
@@ -58,6 +58,6 @@ async function vote(parent, args, context) {
 module.exports = {
   post,
   signup,
-  login,
+  signin,
   vote,
 }

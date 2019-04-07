@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
     "apollo-boost": "0.1.4",
     "apollo-link-context": "1.0.7",
     "apollo-link-ws": "1.0.7",
@@ -11,8 +13,8 @@
     "react-apollo": "2.1.0",
     "react-dom": "16.8.4",
     "react-hanger": "^1.1.4",
-    "react-router": "4.2.0",
-    "react-router-dom": "4.2.2",
+    "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
     "react-use-form-state": "^0.9.0",
     "subscriptions-transport-ws": "0.9.7"
