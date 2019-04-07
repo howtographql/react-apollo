@@ -3,6 +3,7 @@ import Link from './Link'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import { LINKS_PER_PAGE } from '../constants'
+import { List, withStyles, Button } from '@material-ui/core';
 
 export const FEED_QUERY = gql`
   query FeedQuery($first: Int, $skip: Int, $orderBy: LinkOrderByInput) {
@@ -76,7 +77,13 @@ const NEW_VOTES_SUBSCRIPTION = gql`
   }
 `
 
+const styles = {
+  fullList: {
+    width: 'auto'
+  }
+}
 function LinkList(props) {
+  const { classes } = props
   const _updateCacheAfterVote = (store, createVote, linkId) => {
     const isNewPage = props.location.pathname.includes('new')
     const page = parseInt(props.match.params.page, 10)
@@ -170,7 +177,8 @@ function LinkList(props) {
           : 0
 
         return (
-          <>
+          <div className={classes.fullList}>
+            <List>
             {linksToRender.map((link, index) => (
               <Link
                 key={link.id}
@@ -180,20 +188,21 @@ function LinkList(props) {
               />
             ))}
             {isNewPage && (
-              <div className="flex ml4 mv3 gray">
-                <div className="pointer mr2" onClick={_previousPage}>
+              <>
+                <Button color="default" onClick={_previousPage}>
                   Previous
-                </div>
-                <div className="pointer" onClick={() => _nextPage(data)}>
+                </Button>
+                <Button color="default" onClick={() => _nextPage(data)}>
                   Next
-                </div>
-              </div>
+                </Button>
+              </>
             )}
-          </>
+            </List>
+          </div>
         )
       }}
     </Query>
   )
 }
 
-export default LinkList
+export default withStyles(styles)(LinkList)

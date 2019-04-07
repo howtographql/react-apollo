@@ -3,6 +3,7 @@ import { AUTH_TOKEN } from '../constants'
 import { timeDifferenceForDate } from '../utils'
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
+import { ListItem, ListItemIcon, IconButton, ListItemText, withStyles } from '@material-ui/core';
 
 const VOTE_MUTATION = gql`
   mutation VoteMutation($linkId: ID!) {
@@ -23,43 +24,53 @@ const VOTE_MUTATION = gql`
   }
 `
 
+const style = {
+  vote: {
+    padding: 0,
+    margin: 0,
+  },
+  link: {
+    padding: 0,
+    margin: 0,
+  }
+}
+
 function Link(props) {
   const authToken = localStorage.getItem(AUTH_TOKEN)
-
+  const {classes} = props
+  const { link } = props
   return (
-    <div className="flex mt2 items-start">
-      <div className="flex items-center">
+    <ListItem key={link.id}>
+    <>
         <span className="gray">{props.index + 1}.</span>
         {authToken && (
           <Mutation
             mutation={VOTE_MUTATION}
-            variables={{ linkId: props.link.id }}
+            variables={{ linkId: link.id }}
             update={(store, { data: { vote } }) =>
-              props.updateStoreAfterVote(store, vote, props.link.id)
+              props.updateStoreAfterVote(store, vote, link.id)
             }
           >
             {voteMutation => (
-              <div className="ml1 gray f11" onClick={voteMutation}>
-                ▲
-              </div>
+              <ListItemIcon onClick={voteMutation} className={classes.vote}>
+                <IconButton>▲</IconButton>
+              </ListItemIcon>
             )}
           </Mutation>
         )}
+      <ListItemText className={classes.link}>
+      <div>
+        <a  href={link.url}>{link.description}</a> ({link.url})
       </div>
-      <div className="ml1">
-        <div>
-          <a className="App-link" href={props.link.url}>{props.link.description}</a> ({props.link.url})
-        </div>
-        <div className="f6 lh-copy gray">
-          {props.link.votes.length} votes | by{' '}
-          {props.link.postedBy
-            ? props.link.postedBy.name
-            : 'Unknown'}{' '}
-          {timeDifferenceForDate(props.link.createdAt)}
-        </div>
-      </div>
-    </div>
+        {link.votes.length} votes | by{' '}
+        {link.postedBy
+          ? link.postedBy.name
+          : 'Unknown'}{' '}
+        {timeDifferenceForDate(link.createdAt)}
+      </ListItemText>
+    </>
+    </ListItem>
   )
 }
 
-export default Link
+export default withStyles(style)(Link)
