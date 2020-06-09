@@ -2,7 +2,7 @@
 endpoint: ''
 
 # Defines your models, each model is mapped to the database as a table.
-datamodel: datamodel.prisma
+datamodel: datamodel.graphql
 
 # Specifies the language and directory for the generated Prisma client.
 generate:
