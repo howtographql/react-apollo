@@ -1,12 +1,33 @@
-function postedBy(parent, args, context) {
-  return context.prisma.link({ id: parent.id }).postedBy()
-}
+const { ApolloError } = require('apollo-server');
 
-function votes(parent, args, context) {
-  return context.prisma.link({ id: parent.id }).votes()
-}
+const postedBy = async (parent, args, context) => {
+  try {
+    const link = await context.prisma.link.findOne({
+      where: { id: parent.id }
+    });
+    return await context.prisma.user.findOne({
+      where: { id: link.userId }
+    });
+  } catch (err) {
+    throw new ApolloError(err);
+  }
+};
+
+const votes = async (parent, args, context) => {
+  try {
+    return await context.prisma.vote.findMany({
+      where: {
+        link: {
+          id: parent.id
+        }
+      }
+    });
+  } catch (err) {
+    throw new ApolloError(err);
+  }
+};
 
 module.exports = {
   postedBy,
-  votes,
-}
+  votes
+};

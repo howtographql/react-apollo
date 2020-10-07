@@ -1,32 +1,42 @@
-async function feed(parent, args, context) {
-  const count = await context.prisma
-    .linksConnection({
+const { ApolloError } = require('apollo-server');
+
+const info = async () => {
+  return 'hello world!';
+};
+
+const feed = async (parent, args, context) => {
+  try {
+    const links = await context.prisma.link.findMany({
       where: {
         OR: [
-          { description_contains: args.filter },
-          { url_contains: args.filter },
-        ],
+          {
+            url: {
+              contains: args.filter
+            }
+          },
+          {
+            description: {
+              contains: args.filter
+            }
+          }
+        ]
       },
-    })
-    .aggregate()
-    .count()
-  const links = await context.prisma.links({
-    where: {
-      OR: [
-        { description_contains: args.filter },
-        { url_contains: args.filter },
-      ],
-    },
-    skip: args.skip,
-    first: args.first,
-    orderBy: args.orderBy,
-  })
-  return {
-    count,
-    links,
+      skip: args.skip,
+      take: args.take
+    });
+
+    const count = links.length;
+
+    return {
+      links,
+      count
+    };
+  } catch (err) {
+    throw new ApolloError(err);
   }
-}
+};
 
 module.exports = {
-  feed,
-}
+  info,
+  feed
+};

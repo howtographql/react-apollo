@@ -1,6 +1,15 @@
-export * as Link from './Link';
-export * as Mutation from './Mutation';
-export * as Query from './Query';
-export * as Subscription from './Subscription';
-export * as User from './User';
-export * as Vote from './Vote';
+const Link = require('./Link');
+const Mutation = require('./Mutation');
+const Query = require('./Query');
+const Subscription = require('./Subscription');
+const User = require('./User');
+const Vote = require('./Vote');
+
+module.exports = {
+  Link,
+  Mutation,
+  Query,
+  Subscription,
+  User,
+  Vote
+};
