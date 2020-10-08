@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import { withApollo } from 'react-apollo'
-import gql from 'graphql-tag'
-import Link from './Link'
+import React, { Component, useState } from 'react';
+import gql from 'graphql-tag';
+import Link from './Link';
+import { useQuery } from '@apollo/client';
 
 const FEED_SEARCH_QUERY = gql`
   query FeedSearchQuery($filter: String!) {
@@ -24,41 +24,50 @@ const FEED_SEARCH_QUERY = gql`
       }
     }
   }
-`
+`;
 
-class Search extends Component {
-  state = {
-    links: [],
-    filter: '',
-  }
-
-  render() {
-    return (
-      <div>
-        <div>
-          Search
-          <input
-            type="text"
-            onChange={e => this.setState({ filter: e.target.value })}
-          />
-          <button onClick={() => this._executeSearch()}>OK</button>
-        </div>
-        {this.state.links.map((link, index) => (
+const SearchResults = ({ searchFilter, onCompleted }) => {
+  const { data, loading, error } = useQuery(
+    FEED_SEARCH_QUERY,
+    {
+      variables: {
+        filter: searchFilter
+      }
+    }
+  );
+  return (
+    <>
+      {data &&
+        data.feed.links.map((link, index) => (
           <Link key={link.id} link={link} index={index} />
         ))}
+    </>
+  );
+};
+
+const Search = () => {
+  const [searchFilter, setSearchFilter] = useState('');
+  const [executeSearch, setExecuteSearch] = useState(false);
+  return (
+    <>
+      <div>
+        Search
+        <input
+          type="text"
+          onChange={(e) => setSearchFilter(e.target.value)}
+        />
+        <button onClick={() => setExecuteSearch(true)}>
+          OK
+        </button>
       </div>
-    )
-  }
+      {executeSearch && (
+        <SearchResults
+          searchFilter={searchFilter}
+          onCompleted={() => setExecuteSearch(false)}
+        />
+      )}
+    </>
+  );
+};
 
-  _executeSearch = async () => {
-    const { filter } = this.state
-    const result = await this.props.client.query({
-      query: FEED_SEARCH_QUERY,
-      variables: { filter },
-    })
-    const links = result.data.feed.links
-    this.setState({ links })
-  }
-}
-
-export default withApollo(Search)
+export default Search;
