@@ -25,13 +25,17 @@ const VOTE_MUTATION = gql`
 
 const Link = (props) => {
   const { link } = props;
-  const [vote] = useMutation(VOTE_MUTATION, {
-    variables: {
-      linkId: link.id
+  const [vote, { loading, error, data }] = useMutation(
+    VOTE_MUTATION,
+    {
+      variables: {
+        linkId: link.id
+      }
     }
-  });
+  );
   return (
     <div className="flex mt2 items-start">
+      {error && <p>{JSON.stringify(error, null, 2)}</p>}
       <div className="flex items-center">
         <span className="gray">{props.index + 1}.</span>
         <div

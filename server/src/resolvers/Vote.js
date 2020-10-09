@@ -2,8 +2,11 @@ const { ApolloError } = require('apollo-server');
 
 const link = async (parent, args, context) => {
   try {
-    console.log(parent);
-    return context.prisma.vote({ id: parent.id }).link();
+    return context.prisma.link.findMany({
+      where: {
+        userId: parent.userId
+      }
+    });
   } catch (err) {
     throw new ApolloError(err);
   }
