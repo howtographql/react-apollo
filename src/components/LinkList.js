@@ -12,6 +12,7 @@ export const FEED_QUERY = gql`
     $orderBy: LinkOrderByInput
   ) {
     feed(take: $take, skip: $skip, orderBy: $orderBy) {
+      id
       links {
         id
         createdAt
@@ -92,13 +93,36 @@ const getLinksToRender = (isNewPage, data) => {
   return rankedLinks;
 };
 
+const getQueryVariables = (isNewPage, page) => {
+  const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0;
+  const take = isNewPage ? LINKS_PER_PAGE : 100;
+  const orderBy = isNewPage ? 'createdAt_DESC' : null;
+  return { take, skip, orderBy };
+};
+
 const LinkList = () => {
-  const { data, loading, error } = useQuery(FEED_QUERY);
   const history = useHistory();
   const isNewPage = history.location.pathname.includes(
     'new'
   );
-  const pageIndex = 1;
+  const pageIndexParams = history.location.pathname.split(
+    '/'
+  );
+  const page = parseInt(
+    pageIndexParams[pageIndexParams.length - 1]
+  );
+
+  const pageIndex = page ? (page - 1) * LINKS_PER_PAGE : 0;
+
+  const {
+    data,
+    loading,
+    error,
+    subscribeToMore
+  } = useQuery(FEED_QUERY, {
+    variables: getQueryVariables(isNewPage, page)
+  });
+
   return (
     <>
       {loading && <p>Loading...</p>}
@@ -111,9 +135,6 @@ const LinkList = () => {
                 key={link.id}
                 link={link}
                 index={index + pageIndex}
-                updateStoreAfterVote={() =>
-                  console.log('update')
-                }
               />
             )
           )}
@@ -121,13 +142,25 @@ const LinkList = () => {
             <div className="flex ml4 mv3 gray">
               <div
                 className="pointer mr2"
-                onClick={() => console.log('prev page')}
+                onClick={() => {
+                  if (page > 1) {
+                    history.push(`/new/${page - 1}`);
+                  }
+                }}
               >
                 Previous
               </div>
               <div
                 className="pointer"
-                onClick={() => console.log('next page')}
+                onClick={() => {
+                  if (
+                    page <=
+                    data.feed.count / LINKS_PER_PAGE
+                  ) {
+                    const nextPage = page + 1;
+                    history.push(`/new/${nextPage}`);
+                  }
+                }}
               >
                 Next
               </div>

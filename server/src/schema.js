@@ -23,6 +23,7 @@ const schema = gql`
   }
 
   type Feed {
+    id: ID!
     links: [Link!]!
     count: Int!
   }

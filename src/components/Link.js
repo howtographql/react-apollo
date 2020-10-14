@@ -1,4 +1,5 @@
 import React from 'react';
+import { FEED_QUERY } from './LinkList';
 import { AUTH_TOKEN } from '../constants';
 import { timeDifferenceForDate } from '../utils';
 
@@ -30,6 +31,30 @@ const Link = (props) => {
     {
       variables: {
         linkId: link.id
+      },
+      update(cache, { data: { vote } }) {
+        const { feed } = cache.readQuery({
+          query: FEED_QUERY
+        });
+
+        const updatedLinks = feed.links.map((feedLink) => {
+          if (feedLink.id === link.id) {
+            return {
+              ...feedLink,
+              votes: [...feedLink.votes, vote]
+            };
+          }
+          return feedLink;
+        });
+
+        cache.writeQuery({
+          query: FEED_QUERY,
+          data: {
+            feed: {
+              links: updatedLinks
+            }
+          }
+        });
       }
     }
   );
@@ -45,28 +70,6 @@ const Link = (props) => {
         >
           ▲
         </div>
-        {/* {authToken && (
-          <Mutation
-            mutation={VOTE_MUTATION}
-            variables={{ linkId: this.props.link.id }}
-            update={(store, { data: { vote } }) =>
-              this.props.updateStoreAfterVote(
-                store,
-                vote,
-                this.props.link.id
-              )
-            }
-          >
-            {(voteMutation) => (
-              <div
-                className="ml1 gray f11"
-                onClick={voteMutation}
-              >
-                ▲
-              </div>
-            )}
-          </Mutation>
-        )} */}
       </div>
       <div className="ml1">
         <div>

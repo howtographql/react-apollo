@@ -25,9 +25,25 @@ const feed = async (parent, args, context) => {
       take: args.take
     });
 
-    const count = links.length;
+    const count = await context.prisma.link.count({
+      where: {
+        OR: [
+          {
+            url: {
+              contains: args.filter
+            }
+          },
+          {
+            description: {
+              contains: args.filter
+            }
+          }
+        ]
+      }
+    });
 
     return {
+      id: args.skip,
       links,
       count
     };
