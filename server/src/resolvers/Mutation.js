@@ -12,6 +12,14 @@ const createPost = async (
   context
 ) => {
   try {
+    if (!context.userId) {
+      return await context.prisma.link.create({
+        data: {
+          url,
+          description
+        }
+      });
+    }
     return await context.prisma.link.create({
       data: {
         url,
