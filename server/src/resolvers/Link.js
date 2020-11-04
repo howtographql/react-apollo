@@ -9,6 +9,7 @@ const postedBy = async (parent, args, context) => {
       where: { id: link.userId }
     });
   } catch (err) {
+    console.log('the err', err);
     throw new ApolloError(err);
   }
 };

@@ -5,6 +5,7 @@ const {
   ApolloError,
   AuthenticationError
 } = require('apollo-server');
+const { pubsub } = require('./../pubsub');
 
 const createPost = async (
   parent,
@@ -12,16 +13,14 @@ const createPost = async (
   context
 ) => {
   try {
+    let data = {};
     if (!context.userId) {
-      return await context.prisma.link.create({
-        data: {
-          url,
-          description
-        }
-      });
-    }
-    return await context.prisma.link.create({
-      data: {
+      data = {
+        url,
+        description
+      };
+    } else {
+      data = {
         url,
         description,
         postedBy: {
@@ -29,8 +28,15 @@ const createPost = async (
             id: context.userId
           }
         }
-      }
+      };
+    }
+    const newLink = await context.prisma.link.create({
+      data
     });
+    pubsub.publish('POST_CREATED', {
+      newLink
+    });
+    return newLink;
   } catch (err) {
     throw new ApolloError(err);
   }
@@ -116,7 +122,7 @@ const vote = async (parent, args, context) => {
       );
     }
 
-    return await context.prisma.vote.create({
+    const newVote = await context.prisma.vote.create({
       data: {
         link: {
           connect: {
@@ -130,6 +136,12 @@ const vote = async (parent, args, context) => {
         }
       }
     });
+
+    pubsub.publish('VOTE', {
+      newVote
+    });
+
+    return newVote;
   } catch (err) {
     throw new ApolloError(err);
   }

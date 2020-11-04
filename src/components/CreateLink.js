@@ -1,8 +1,8 @@
-import React, { Component, useState } from 'react';
-import { FEED_QUERY } from './LinkList';
-import { LINKS_PER_PAGE } from '../constants';
-import { useMutation, gql } from '@apollo/client';
+import React, { useState } from 'react';
+import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router';
+import { LINKS_PER_PAGE } from '../constants';
+import { FEED_QUERY } from './LinkList';
 
 const CREATE_LINK_MUTATION = gql`
   mutation PostMutation(

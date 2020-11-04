@@ -9,12 +9,35 @@ const prisma = new PrismaClient();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => ({
-    prisma,
-    userId: req.headers.authorization
-      ? getUserId(req)
-      : null
-  })
+  context: async ({ req, connection }) => {
+    if (connection) {
+      return connection.context;
+    } else {
+      return {
+        prisma,
+        userId: req.headers.authorization
+          ? getUserId(req)
+          : null
+      };
+    }
+  },
+  subscriptions: {
+    onConnect: (connectionParams) => {
+      if (connectionParams.authToken) {
+        return {
+          prisma,
+          userId: getUserId(
+            null,
+            connectionParams.authToken
+          )
+        };
+      } else {
+        return {
+          prisma
+        };
+      }
+    }
+  }
 });
 
 server.listen(process.env.PORT || 4000).then(({ port }) => {

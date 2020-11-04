@@ -1,31 +1,10 @@
-const { PubSub } = require('apollo-server');
-
-const pubsub = new PubSub();
-
-function newLinkSubscribe(parent, args, context, info) {
-  return context.prisma.$subscribe
-    .link({ mutation_in: ['CREATED'] })
-    .node();
-}
+const { pubsub } = require('./../pubsub');
 
 const newLink = {
-  subscribe: () => pubsub.asyncIterator(['CREATED']),
-  resolve: (payload) => {
-    return payload;
-  }
+  subscribe: () => pubsub.asyncIterator(['POST_CREATED'])
 };
-
-function newVoteSubscribe(parent, args, context, info) {
-  return context.prisma.$subscribe
-    .vote({ mutation_in: ['CREATED'] })
-    .node();
-}
-
 const newVote = {
-  subscribe: newVoteSubscribe,
-  resolve: (payload) => {
-    return payload;
-  }
+  subscribe: () => pubsub.asyncIterator(['VOTE'])
 };
 
 module.exports = {

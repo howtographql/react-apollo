@@ -2,9 +2,9 @@ const { ApolloError } = require('apollo-server');
 
 const link = async (parent, args, context) => {
   try {
-    return context.prisma.link.findMany({
+    return await context.prisma.link.findOne({
       where: {
-        userId: parent.userId
+        id: parent.linkId
       }
     });
   } catch (err) {
