@@ -9,9 +9,8 @@ const CREATE_LINK_MUTATION = gql`
     $description: String!
     $url: String!
   ) {
-    createPost(description: $description, url: $url) {
+    post(description: $description, url: $url) {
       id
-      createdAt
       url
       description
     }
@@ -29,10 +28,10 @@ const CreateLink = () => {
       description: formState.description,
       url: formState.url
     },
-    update: (cache, { data: { createPost } }) => {
+    update: (cache, { data: { post } }) => {
       const take = LINKS_PER_PAGE;
       const skip = 0;
-      const orderBy = 'createdAt_DESC';
+      const orderBy = { createdAt: 'desc' };
 
       const data = cache.readQuery({
         query: FEED_QUERY,
@@ -43,11 +42,13 @@ const CreateLink = () => {
         }
       });
 
+      console.log('the data', data);
+
       cache.writeQuery({
         query: FEED_QUERY,
         data: {
           feed: {
-            links: [createPost, ...data.feed.links]
+            links: [post, ...data.feed.links]
           }
         },
         variables: {

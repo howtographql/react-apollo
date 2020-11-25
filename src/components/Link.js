@@ -29,7 +29,7 @@ const Link = (props) => {
 
   const take = LINKS_PER_PAGE;
   const skip = 0;
-  const orderBy = 'createdAt_DESC';
+  const orderBy = { createdAt: 'desc' };
 
   const [vote] = useMutation(VOTE_MUTATION, {
     variables: {

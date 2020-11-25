@@ -1,32 +1,14 @@
-const { ApolloError } = require('apollo-server');
+function postedBy(parent, args, context) {
+  return context.prisma.link
+    .findUnique({ where: { id: parent.id } })
+    .postedBy();
+}
 
-const postedBy = async (parent, args, context) => {
-  try {
-    const link = await context.prisma.link.findOne({
-      where: { id: parent.id }
-    });
-    return await context.prisma.user.findOne({
-      where: { id: link.userId }
-    });
-  } catch (err) {
-    console.log('the err', err);
-    throw new ApolloError(err);
-  }
-};
-
-const votes = async (parent, args, context) => {
-  try {
-    return await context.prisma.vote.findMany({
-      where: {
-        link: {
-          id: parent.id
-        }
-      }
-    });
-  } catch (err) {
-    throw new ApolloError(err);
-  }
-};
+function votes(parent, args, context) {
+  return context.prisma.link
+    .findUnique({ where: { id: parent.id } })
+    .votes();
+}
 
 module.exports = {
   postedBy,

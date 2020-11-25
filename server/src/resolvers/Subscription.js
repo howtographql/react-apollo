@@ -1,13 +1,26 @@
-const { pubsub } = require('./../pubsub');
+function newLinkSubscribe(parent, args, context, info) {
+  return context.pubsub.asyncIterator("NEW_LINK")
+}
 
 const newLink = {
-  subscribe: () => pubsub.asyncIterator(['POST_CREATED'])
-};
+  subscribe: newLinkSubscribe,
+  resolve: payload => {
+    return payload
+  },
+}
+
+function newVoteSubscribe(parent, args, context, info) {
+  return context.pubsub.asyncIterator("NEW_VOTE")
+}
+
 const newVote = {
-  subscribe: () => pubsub.asyncIterator(['VOTE'])
-};
+  subscribe: newVoteSubscribe,
+  resolve: payload => {
+    return payload
+  },
+}
 
 module.exports = {
   newLink,
   newVote
-};
+}

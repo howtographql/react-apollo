@@ -6,18 +6,20 @@ function getTokenPayload(token) {
 }
 
 function getUserId(req, authToken) {
-  if (authToken) {
-    const { userId } = getTokenPayload(authToken);
-    return userId;
-  }
-
-  const authHeader = req.headers.authorization;
-  if (authHeader) {
-    const token = authHeader.replace('Bearer ', '');
-    if (!token) {
-      throw new Error('No token found');
+  if (req) {
+    console.log('has req');
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      const token = authHeader.replace('Bearer ', '');
+      if (!token) {
+        throw new Error('No token found');
+      }
+      const { userId } = getTokenPayload(token);
+      return userId;
     }
-    const { userId } = getTokenPayload(token);
+  } else if (authToken) {
+    console.log('has auth header', authToken);
+    const { userId } = getTokenPayload(authToken);
     return userId;
   }
 

@@ -14,7 +14,6 @@ export const FEED_QUERY = gql`
       id
       links {
         id
-        createdAt
         url
         description
         postedBy {
@@ -27,6 +26,7 @@ export const FEED_QUERY = gql`
             id
           }
         }
+        createdAt
       }
       count
     }
@@ -39,7 +39,6 @@ const NEW_LINKS_SUBSCRIPTION = gql`
       id
       url
       description
-      createdAt
       postedBy {
         id
         name
@@ -50,6 +49,7 @@ const NEW_LINKS_SUBSCRIPTION = gql`
           id
         }
       }
+      createdAt
     }
   }
 `;
@@ -62,7 +62,6 @@ const NEW_VOTES_SUBSCRIPTION = gql`
         id
         url
         description
-        createdAt
         postedBy {
           id
           name
@@ -73,6 +72,7 @@ const NEW_VOTES_SUBSCRIPTION = gql`
             id
           }
         }
+        createdAt
       }
       user {
         id
@@ -95,7 +95,7 @@ const getLinksToRender = (isNewPage, data) => {
 const getQueryVariables = (isNewPage, page) => {
   const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0;
   const take = isNewPage ? LINKS_PER_PAGE : 100;
-  const orderBy = isNewPage ? 'createdAt_DESC' : null;
+  const orderBy = { createdAt: 'desc' };
   return { take, skip, orderBy };
 };
 
@@ -125,7 +125,6 @@ const LinkList = () => {
   subscribeToMore({
     document: NEW_LINKS_SUBSCRIPTION,
     updateQuery: (prev, { subscriptionData }) => {
-      console.log('updating');
       if (!subscriptionData.data) return prev;
       const newLink = subscriptionData.data.newLink;
       const exists = prev.feed.links.find(

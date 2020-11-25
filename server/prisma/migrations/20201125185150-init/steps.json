@@ -31,7 +31,7 @@
       "tag": "CreateField",
       "model": "Link",
       "field": "id",
-      "type": "String",
+      "type": "Int",
       "arity": "Required"
     },
     {
@@ -68,21 +68,7 @@
         "directive": "default"
       },
       "argument": "",
-      "value": "cuid()"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Link",
-      "field": "description",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Link",
-      "field": "url",
-      "type": "String",
-      "arity": "Required"
+      "value": "autoincrement()"
     },
     {
       "tag": "CreateField",
@@ -119,6 +105,20 @@
     {
       "tag": "CreateField",
       "model": "Link",
+      "field": "description",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Link",
+      "field": "url",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Link",
       "field": "postedBy",
       "type": "User",
       "arity": "Required"
@@ -146,7 +146,7 @@
         "directive": "relation"
       },
       "argument": "fields",
-      "value": "[userId]"
+      "value": "[postedById]"
     },
     {
       "tag": "CreateArgument",
@@ -165,16 +165,16 @@
     {
       "tag": "CreateField",
       "model": "Link",
-      "field": "votes",
-      "type": "Vote",
-      "arity": "List"
+      "field": "postedById",
+      "type": "Int",
+      "arity": "Required"
     },
     {
       "tag": "CreateField",
       "model": "Link",
-      "field": "userId",
-      "type": "String",
-      "arity": "Required"
+      "field": "votes",
+      "type": "Vote",
+      "arity": "List"
     },
     {
       "tag": "CreateModel",
@@ -184,7 +184,7 @@
       "tag": "CreateField",
       "model": "User",
       "field": "id",
-      "type": "String",
+      "type": "Int",
       "arity": "Required"
     },
     {
@@ -221,7 +221,7 @@
         "directive": "default"
       },
       "argument": "",
-      "value": "cuid()"
+      "value": "autoincrement()"
     },
     {
       "tag": "CreateField",
@@ -236,6 +236,17 @@
       "field": "email",
       "type": "String",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "email"
+        },
+        "directive": "unique"
+      }
     },
     {
       "tag": "CreateField",
@@ -266,7 +277,7 @@
       "tag": "CreateField",
       "model": "Vote",
       "field": "id",
-      "type": "String",
+      "type": "Int",
       "arity": "Required"
     },
     {
@@ -303,7 +314,7 @@
         "directive": "default"
       },
       "argument": "",
-      "value": "cuid()"
+      "value": "autoincrement()"
     },
     {
       "tag": "CreateField",
@@ -354,6 +365,13 @@
     {
       "tag": "CreateField",
       "model": "Vote",
+      "field": "linkId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Vote",
       "field": "user",
       "type": "User",
       "arity": "Required"
@@ -400,16 +418,25 @@
     {
       "tag": "CreateField",
       "model": "Vote",
-      "field": "linkId",
-      "type": "String",
+      "field": "userId",
+      "type": "Int",
       "arity": "Required"
     },
     {
-      "tag": "CreateField",
-      "model": "Vote",
-      "field": "userId",
-      "type": "String",
-      "arity": "Required"
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "Vote",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[linkId, userId]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
     }
   ]
 }

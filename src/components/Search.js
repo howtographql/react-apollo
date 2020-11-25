@@ -10,7 +10,6 @@ const FEED_SEARCH_QUERY = gql`
         id
         url
         description
-        createdAt
         postedBy {
           id
           name
@@ -21,6 +20,7 @@ const FEED_SEARCH_QUERY = gql`
             id
           }
         }
+        createdAt
       }
     }
   }

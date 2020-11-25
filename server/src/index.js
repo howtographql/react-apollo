@@ -1,25 +1,47 @@
 const { ApolloServer } = require('apollo-server');
 const { PrismaClient } = require('@prisma/client');
-const resolvers = require('./resolvers');
-const typeDefs = require('./schema');
+const Query = require('./resolvers/Query');
+const Mutation = require('./resolvers/Mutation');
+const Subscription = require('./resolvers/Subscription');
+const User = require('./resolvers/User');
+const Link = require('./resolvers/Link');
+const Vote = require('./resolvers/Vote');
+const { PubSub } = require('graphql-yoga');
+const fs = require('fs');
+const path = require('path');
 const { getUserId } = require('./utils');
 
-const prisma = new PrismaClient();
+const pubsub = new PubSub();
+
+const prisma = new PrismaClient({
+  errorFormat: 'minimal'
+});
+
+const resolvers = {
+  Query,
+  Mutation,
+  Subscription,
+  User,
+  Link,
+  Vote
+};
 
 const server = new ApolloServer({
-  typeDefs,
+  typeDefs: fs.readFileSync(
+    path.join(__dirname, 'schema.graphql'),
+    'utf8'
+  ),
   resolvers,
-  context: async ({ req, connection }) => {
-    if (connection) {
-      return connection.context;
-    } else {
-      return {
-        prisma,
-        userId: req.headers.authorization
+  context: ({ req }) => {
+    return {
+      ...req,
+      prisma,
+      pubsub,
+      userId:
+        req && req.headers.authorization
           ? getUserId(req)
           : null
-      };
-    }
+    };
   },
   subscriptions: {
     onConnect: (connectionParams) => {
@@ -40,8 +62,8 @@ const server = new ApolloServer({
   }
 });
 
-server.listen(process.env.PORT || 4000).then(({ port }) => {
-  console.log(
-    `Server listening on http://localhost:${port}`
+server
+  .listen()
+  .then(({ url }) =>
+    console.log(`Server is running on ${url}`)
   );
-});

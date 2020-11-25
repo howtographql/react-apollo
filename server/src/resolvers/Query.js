@@ -1,58 +1,29 @@
-const { ApolloError } = require('apollo-server');
-
-const info = async () => {
-  return 'hello world!';
-};
-
-const feed = async (parent, args, context) => {
-  try {
-    const links = await context.prisma.link.findMany({
-      where: {
+async function feed(parent, args, context, info) {
+  const where = args.filter
+    ? {
         OR: [
-          {
-            url: {
-              contains: args.filter
-            }
-          },
-          {
-            description: {
-              contains: args.filter
-            }
-          }
-        ]
-      },
-      skip: args.skip,
-      take: args.take
-    });
-
-    const count = await context.prisma.link.count({
-      where: {
-        OR: [
-          {
-            url: {
-              contains: args.filter
-            }
-          },
-          {
-            description: {
-              contains: args.filter
-            }
-          }
+          { description: { contains: args.filter } },
+          { url: { contains: args.filter } }
         ]
       }
-    });
+    : {};
 
-    return {
-      id: args.skip,
-      links,
-      count
-    };
-  } catch (err) {
-    throw new ApolloError(err);
-  }
-};
+  const links = await context.prisma.link.findMany({
+    where,
+    skip: args.skip,
+    take: args.take,
+    orderBy: args.orderBy
+  });
+
+  const count = await context.prisma.link.count({ where });
+
+  return {
+    id: 'main-feed',
+    links,
+    count
+  };
+}
 
 module.exports = {
-  info,
   feed
 };
