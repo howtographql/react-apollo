@@ -42,8 +42,6 @@ const CreateLink = () => {
         }
       });
 
-      console.log('the data', data);
-
       cache.writeQuery({
         query: FEED_QUERY,
         data: {

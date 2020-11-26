@@ -6,6 +6,7 @@ import Link from './Link';
 const FEED_SEARCH_QUERY = gql`
   query FeedSearchQuery($filter: String!) {
     feed(filter: $filter) {
+      id
       links {
         id
         url
