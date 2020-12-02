@@ -74,13 +74,15 @@ const Link = (props) => {
     <div className="flex mt2 items-start">
       <div className="flex items-center">
         <span className="gray">{props.index + 1}.</span>
-        <div
-          className="ml1 gray f11"
-          style={{ cursor: 'pointer' }}
-          onClick={vote}
-        >
-          ▲
-        </div>
+        {authToken && (
+          <div
+            className="ml1 gray f11"
+            style={{ cursor: 'pointer' }}
+            onClick={vote}
+          >
+            ▲
+          </div>
+        )}
       </div>
       <div className="ml1">
         <div>
