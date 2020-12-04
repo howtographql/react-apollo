@@ -1,5 +1,5 @@
 function newLinkSubscribe(parent, args, context, info) {
-  return context.prisma.$subscribe.link({ mutation_in: ['CREATED'] }).node()
+  return context.pubsub.asyncIterator("NEW_LINK")
 }
 
 const newLink = {
@@ -10,7 +10,7 @@ const newLink = {
 }
 
 function newVoteSubscribe(parent, args, context, info) {
-  return context.prisma.$subscribe.vote({ mutation_in: ['CREATED'] }).node()
+  return context.pubsub.asyncIterator("NEW_VOTE")
 }
 
 const newVote = {
@@ -22,5 +22,5 @@ const newVote = {
 
 module.exports = {
   newLink,
-  newVote,
+  newVote
 }
