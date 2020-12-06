@@ -21,7 +21,8 @@ const CreateLink = () => {
   const history = useHistory();
   const [formState, setFormState] = useState({
     description: '',
-    url: ''
+    url: '',
+    category: ''
   });
   const [createLink] = useMutation(CREATE_LINK_MUTATION, {
     variables: {
@@ -90,6 +91,18 @@ const CreateLink = () => {
             }
             type="text"
             placeholder="The URL for the link"
+          />
+          <input
+            className="mb2"
+            value={formState.url}
+            onChange={(e) =>
+              setFormState({
+                ...formState,
+                category: e.target.value
+              })
+            }
+            type="text"
+            placeholder="The category for the link"
           />
         </div>
         <button type="submit">Submit</button>

@@ -49,6 +49,7 @@ type Link {
   postedBy: User
   votes: [Vote!]!
   createdAt: DateTime!
+  category: String
 }
 
 type Vote {

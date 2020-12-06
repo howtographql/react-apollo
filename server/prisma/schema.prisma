@@ -15,6 +15,7 @@ model Link {
   postedBy    User     @relation(fields: [postedById], references: [id])
   postedById  Int
   votes       Vote[]
+  category    String?
 }
 
 model User {
