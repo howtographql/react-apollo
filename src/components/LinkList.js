@@ -16,6 +16,7 @@ export const FEED_QUERY = gql`
         id
         url
         description
+        category
         postedBy {
           id
           name
@@ -26,7 +27,6 @@ export const FEED_QUERY = gql`
             id
           }
         }
-        createdAt
       }
       count
     }

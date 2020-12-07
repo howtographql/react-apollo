@@ -8,11 +8,13 @@ const CREATE_LINK_MUTATION = gql`
   mutation PostMutation(
     $description: String!
     $url: String!
+    $category: String
   ) {
-    post(description: $description, url: $url) {
+    post(description: $description, url: $url, category: $category) {
       id
       url
       description
+      category
     }
   }
 `;
@@ -94,7 +96,7 @@ const CreateLink = () => {
           />
           <input
             className="mb2"
-            value={formState.url}
+            value={formState.category}
             onChange={(e) =>
               setFormState({
                 ...formState,

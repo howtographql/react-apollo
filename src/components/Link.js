@@ -86,7 +86,7 @@ const Link = (props) => {
       </div>
       <div className="ml1">
         <div>
-          {link.description} ({link.url})
+          {link.description} ({link.url}) {link.category}
         </div>
         {authToken && (
           <div className="f6 lh-copy gray">

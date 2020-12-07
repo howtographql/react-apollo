@@ -12,10 +12,10 @@ model Link {
   createdAt   DateTime @default(now())
   description String
   url         String
+  category    String
   postedBy    User     @relation(fields: [postedById], references: [id])
   postedById  Int
   votes       Vote[]
-  category    String?
 }
 
 model User {

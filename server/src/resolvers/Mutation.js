@@ -13,6 +13,7 @@ function post(parent, args, context, info) {
       postedBy: { connect: { id: userId } }
     }
   });
+
   context.pubsub.publish('NEW_LINK', newLink);
 
   return newLink;
