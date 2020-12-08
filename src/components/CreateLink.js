@@ -29,7 +29,8 @@ const CreateLink = () => {
   const [createLink] = useMutation(CREATE_LINK_MUTATION, {
     variables: {
       description: formState.description,
-      url: formState.url
+      url: formState.url,
+      category: formState.category
     },
     update: (cache, { data: { post } }) => {
       const take = LINKS_PER_PAGE;
