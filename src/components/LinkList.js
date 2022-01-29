@@ -1,85 +1,95 @@
 import React from 'react';
-import { gql, useQuery } from '@apollo/client';
-import { useHistory } from 'react-router';
-import { LINKS_PER_PAGE } from '../constants';
 import Link from './Link';
+import { LINKS_PER_PAGE } from '../constants';
 
-export const FEED_QUERY = gql`
-  query FeedQuery(
-    $take: Int
-    $skip: Int
-    $orderBy: LinkOrderByInput
-  ) {
-    feed(take: $take, skip: $skip, orderBy: $orderBy) {
-      id
-      links {
-        id
-        url
-        description
-        postedBy {
-          id
-          name
-        }
-        votes {
-          id
-          user {
-            id
-          }
-        }
-        createdAt
-      }
-      count
-    }
-  }
-`;
+import {useQuery, gql} from '@apollo/client';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 const NEW_LINKS_SUBSCRIPTION = gql`
-  subscription {
-    newLink {
-      id
-      url
-      description
-      postedBy {
-        id
-        name
-      }
-      votes {
-        id
-        user {
-          id
+    subscription {
+        newLink {
+            id
+            url
+            description
+            createdAt
+            postedBy {
+                id
+                name
+            }
+            votes {
+                id
+                user {
+                    id
+                }
+            }
         }
-      }
-      createdAt
     }
-  }
 `;
 
 const NEW_VOTES_SUBSCRIPTION = gql`
-  subscription {
-    newVote {
-      id
-      link {
-        id
-        url
-        description
-        postedBy {
-          id
-          name
-        }
-        votes {
-          id
-          user {
+    subscription {
+        newVote {
             id
-          }
+            link {
+                id
+                url
+                description
+                createdAt
+                postedBy {
+                    id
+                    name
+                }
+                votes {
+                    id
+                    user {
+                        id
+                    }
+                }
+            }
+            user {
+                id
+            }
         }
-        createdAt
-      }
-      user {
-        id
-      }
     }
-  }
 `;
+
+
+export const FEED_QUERY = gql`
+    query FeedQuery(
+        $take: Int
+        $skip: Int
+        $orderBy: LinkOrderByInput
+    ) {
+        feed(take: $take, skip: $skip, orderBy: $orderBy) {
+            id
+            links {
+                id
+                createdAt
+                url
+                description
+                postedBy {
+                    id
+                    name
+                }
+                votes {
+                    id
+                    user {
+                        id
+                    }
+                }
+            }
+            count
+        }
+    }
+`;
+
+
+const getQueryVariables = (isNewPage, page) => {
+  const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0;
+  const take = isNewPage ? LINKS_PER_PAGE : 100;
+  const orderBy = { createdAt: 'desc' };
+  return { take, skip, orderBy };
+};
 
 const getLinksToRender = (isNewPage, data) => {
   if (isNewPage) {
@@ -92,26 +102,23 @@ const getLinksToRender = (isNewPage, data) => {
   return rankedLinks;
 };
 
-const getQueryVariables = (isNewPage, page) => {
-  const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0;
-  const take = isNewPage ? LINKS_PER_PAGE : 100;
-  const orderBy = { createdAt: 'desc' };
-  return { take, skip, orderBy };
-};
 
-const LinkList = () => {
-  const history = useHistory();
-  const isNewPage = history.location.pathname.includes(
+const LinkList = ({client}) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isNewPage = location.pathname.includes(
     'new'
   );
-  const pageIndexParams = history.location.pathname.split(
+  const pageIndexParams = location.pathname.split(
     '/'
   );
   const page = parseInt(
     pageIndexParams[pageIndexParams.length - 1]
   );
-
   const pageIndex = page ? (page - 1) * LINKS_PER_PAGE : 0;
+
+
+
 
   const {
     data,
@@ -119,16 +126,18 @@ const LinkList = () => {
     error,
     subscribeToMore
   } = useQuery(FEED_QUERY, {
-    variables: getQueryVariables(isNewPage, page)
+    variables: getQueryVariables(isNewPage, page),
+    fetchPolicy: "cache-and-network"
   });
+
 
   subscribeToMore({
     document: NEW_LINKS_SUBSCRIPTION,
-    updateQuery: (prev, { subscriptionData }) => {
+    updateQuery: (prev, {subscriptionData}) => {
       if (!subscriptionData.data) return prev;
       const newLink = subscriptionData.data.newLink;
       const exists = prev.feed.links.find(
-        ({ id }) => id === newLink.id
+        ({id}) => id === newLink.id
       );
       if (exists) return prev;
 
@@ -145,6 +154,7 @@ const LinkList = () => {
   subscribeToMore({
     document: NEW_VOTES_SUBSCRIPTION
   });
+
 
   return (
     <>
@@ -167,7 +177,7 @@ const LinkList = () => {
                 className="pointer mr2"
                 onClick={() => {
                   if (page > 1) {
-                    history.push(`/new/${page - 1}`);
+                    navigate(`/new/${page - 1}`);
                   }
                 }}
               >
@@ -181,7 +191,7 @@ const LinkList = () => {
                     data.feed.count / LINKS_PER_PAGE
                   ) {
                     const nextPage = page + 1;
-                    history.push(`/new/${nextPage}`);
+                    navigate(`/new/${nextPage}`);
                   }
                 }}
               >

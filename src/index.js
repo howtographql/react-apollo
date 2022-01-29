@@ -1,26 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import {
-  ApolloClient,
-  ApolloProvider,
-  createHttpLink,
-  InMemoryCache,
-  split
-} from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
+import './styles/index.css';
+import App from './components/App';
+import {BrowserRouter} from 'react-router-dom';
+import {setContext} from '@apollo/client/link/context';
+import { split } from '@apollo/client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
-import App from './components/App';
-import { AUTH_TOKEN } from './constants';
-import * as serviceWorker from './serviceWorker';
-import './styles/index.css';
+
+import {
+  ApolloProvider,
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache
+} from '@apollo/client';
+import {AUTH_TOKEN} from "./constants";
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000'
 });
 
-const authLink = setContext((_, { headers }) => {
+const authLink = setContext((_, {headers}) => {
   const token = localStorage.getItem(AUTH_TOKEN);
   return {
     headers: {
@@ -54,15 +54,20 @@ const link = split(
 
 const client = new ApolloClient({
   link,
-  cache: new InMemoryCache()
+  cache: new InMemoryCache({
+    typePolicies: {
+      Link: {
+        keyFields: ["id"]
+      }
+    }
+  })
 });
 
 ReactDOM.render(
   <BrowserRouter>
     <ApolloProvider client={client}>
-      <App />
+      <App/>
     </ApolloProvider>
   </BrowserRouter>,
   document.getElementById('root')
 );
-serviceWorker.unregister();

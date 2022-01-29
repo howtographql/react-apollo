@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite" 
+  provider = "sqlite"
   url      = "file:./dev.db"
 }
 
@@ -8,17 +8,17 @@ generator client {
 }
 
 model Link {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
   description String
   url         String
-  postedBy    User     @relation(fields: [postedById], references: [id])
-  postedById  Int
+  postedBy    User?    @relation(fields: [postedById], references: [id])
+  postedById  String?
   votes       Vote[]
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       String @id @default(uuid())
   name     String
   email    String @unique
   password String
@@ -27,11 +27,11 @@ model User {
 }
 
 model Vote {
-  id     Int  @id @default(autoincrement())
-  link   Link @relation(fields: [linkId], references: [id])
-  linkId Int
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  id     Int    @id @default(autoincrement())
+  link   Link   @relation(fields: [linkId], references: [id])
+  linkId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   @@unique([linkId, userId])
 }

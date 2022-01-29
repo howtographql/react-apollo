@@ -1,15 +1,16 @@
 import React from 'react';
-import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
-import { AUTH_TOKEN } from '../constants';
+import {Link, useNavigate} from 'react-router-dom';
+import {AUTH_TOKEN} from '../constants';
 
 const Header = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const authToken = localStorage.getItem(AUTH_TOKEN);
   return (
     <div className="flex pa1 justify-between nowrap orange">
       <div className="flex flex-fixed black">
-        <div className="fw7 mr1">Hacker News</div>
+        <Link to="/" className="no-underline black">
+          <div className="fw7 mr1">Hacker News</div>
+        </Link>
         <Link to="/" className="ml1 no-underline black">
           new
         </Link>
@@ -42,7 +43,7 @@ const Header = () => {
             className="ml1 pointer black"
             onClick={() => {
               localStorage.removeItem(AUTH_TOKEN);
-              history.push(`/`);
+              navigate(`/`);
             }}
           >
             logout

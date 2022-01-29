@@ -1,5 +1,5 @@
-const { ApolloServer, PubSub } = require('apollo-server');
-const { PrismaClient } = require('@prisma/client');
+const {ApolloServer, PubSub} = require('apollo-server');
+const {PrismaClient} = require('@prisma/client');
 const Query = require('./resolvers/Query');
 const Mutation = require('./resolvers/Mutation');
 const Subscription = require('./resolvers/Subscription');
@@ -8,7 +8,7 @@ const Link = require('./resolvers/Link');
 const Vote = require('./resolvers/Vote');
 const fs = require('fs');
 const path = require('path');
-const { getUserId } = require('./utils');
+const {getUserId} = require('./utils');
 
 const pubsub = new PubSub();
 
@@ -31,7 +31,7 @@ const server = new ApolloServer({
     'utf8'
   ),
   resolvers,
-  context: ({ req }) => {
+  context: ({req}) => {
     return {
       ...req,
       prisma,
@@ -63,6 +63,6 @@ const server = new ApolloServer({
 
 server
   .listen()
-  .then(({ url }) =>
+  .then(({url}) =>
     console.log(`Server is running on ${url}`)
   );

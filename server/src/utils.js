@@ -13,11 +13,11 @@ function getUserId(req, authToken) {
       if (!token) {
         throw new Error('No token found');
       }
-      const { userId } = getTokenPayload(token);
+      const {userId} = getTokenPayload(token);
       return userId;
     }
   } else if (authToken) {
-    const { userId } = getTokenPayload(authToken);
+    const {userId} = getTokenPayload(authToken);
     return userId;
   }
 

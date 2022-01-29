@@ -1,8 +1,8 @@
 import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
 import CreateLink from './CreateLink';
 import Header from './Header';
 import LinkList from './LinkList';
+import {Navigate, Route, Routes} from 'react-router-dom';
 import Login from './Login';
 import Search from './Search';
 
@@ -10,27 +10,23 @@ const App = () => (
   <div className="center w85">
     <Header />
     <div className="ph3 pv1 background-gray">
-      <Switch>
+      <Routes>
         <Route
-          exact
           path="/"
-          render={() => <Redirect to="/new/1" />}
+          element={<Navigate replace to="/new/1" />}
         />
-
         <Route
-          exact
           path="/create"
-          component={CreateLink}
+          element={<CreateLink/>}
         />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/search" component={Search} />
-        <Route exact path="/top" component={LinkList} />
+        <Route path="/login" element={<Login/>}/>
+        <Route path="/search"element={<Search/>}/>
+        <Route path="/top" element={<LinkList/>} />
         <Route
-          exact
           path="/new/:page"
-          component={LinkList}
+          element={<LinkList/>}
         />
-      </Switch>
+      </Routes>
     </div>
   </div>
 );

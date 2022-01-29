@@ -1,37 +1,40 @@
-import React, { useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
-import { useHistory } from 'react-router';
-import { LINKS_PER_PAGE } from '../constants';
-import { FEED_QUERY } from './LinkList';
+import React, {useState} from 'react';
+import {useMutation, gql} from '@apollo/client';
+import {useNavigate} from 'react-router-dom';
+import {FEED_QUERY} from "./LinkList";
+import {LINKS_PER_PAGE} from "../constants";
 
 const CREATE_LINK_MUTATION = gql`
-  mutation PostMutation(
-    $description: String!
-    $url: String!
-  ) {
-    post(description: $description, url: $url) {
-      id
-      url
-      description
+    mutation PostMutation(
+        $description: String!
+        $url: String!
+    ) {
+        post(description: $description, url: $url) {
+            id
+            createdAt
+            url
+            description
+        }
     }
-  }
 `;
 
 const CreateLink = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
+
   const [formState, setFormState] = useState({
     description: '',
     url: ''
   });
+
   const [createLink] = useMutation(CREATE_LINK_MUTATION, {
     variables: {
       description: formState.description,
       url: formState.url
     },
-    update: (cache, { data: { post } }) => {
+    update: (cache, {data: {post}}) => {
       const take = LINKS_PER_PAGE;
       const skip = 0;
-      const orderBy = { createdAt: 'desc' };
+      const orderBy = {createdAt: 'desc'};
 
       const data = cache.readQuery({
         query: FEED_QUERY,
@@ -49,6 +52,7 @@ const CreateLink = () => {
             links: [post, ...data.feed.links]
           }
         },
+
         variables: {
           take,
           skip,
@@ -56,8 +60,11 @@ const CreateLink = () => {
         }
       });
     },
-    onCompleted: () => history.push('/new/1')
+    onCompleted: () => {
+      navigate("/")
+    }
   });
+
   return (
     <div>
       <form
