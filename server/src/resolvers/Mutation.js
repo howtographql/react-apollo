@@ -63,8 +63,6 @@ async function login(parent, args, context, info) {
 
 async function vote(parent, args, context, info) {
   const { userId } = context;
-  console.log(userId)
-  console.log(args)
 
   const vote = await context.prisma.vote.findUnique({
     where: {
