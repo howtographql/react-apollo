@@ -5,13 +5,19 @@ const { APP_SECRET } = require('../utils');
 async function post(parent, args, context, info) {
   const { userId } = context;
 
+  let postedBy = undefined
+  if (userId) {
+    postedBy = { connect: { id: userId } }
+  }
+
   const newLink = await context.prisma.link.create({
     data: {
       url: args.url,
       description: args.description,
-      postedBy: { connect: { id: userId } }
+      postedBy
     }
   });
+
   context.pubsub.publish('NEW_LINK', newLink);
 
   return newLink;
@@ -57,10 +63,13 @@ async function login(parent, args, context, info) {
 
 async function vote(parent, args, context, info) {
   const { userId } = context;
+  console.log(userId)
+  console.log(args)
+
   const vote = await context.prisma.vote.findUnique({
     where: {
       linkId_userId: {
-        linkId: Number(args.linkId),
+        linkId: args.linkId,
         userId: userId
       }
     }
@@ -75,7 +84,7 @@ async function vote(parent, args, context, info) {
   const newVote = context.prisma.vote.create({
     data: {
       user: { connect: { id: userId } },
-      link: { connect: { id: Number(args.linkId) } }
+      link: { connect: { id: args.linkId } }
     }
   });
   context.pubsub.publish('NEW_VOTE', newVote);
@@ -89,3 +98,4 @@ module.exports = {
   login,
   vote
 };
+
