@@ -127,7 +127,6 @@ const LinkList = ({client}) => {
     subscribeToMore
   } = useQuery(FEED_QUERY, {
     variables: getQueryVariables(isNewPage, page),
-    fetchPolicy: "cache-and-network"
   });
 
 
