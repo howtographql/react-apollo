@@ -36,7 +36,7 @@ const CreateLink = () => {
       const skip = 0;
       const orderBy = {createdAt: 'desc'};
 
-      const data = cache.readQuery({
+      const { data } = cache.readQuery({
         query: FEED_QUERY,
         variables: {
           take,
