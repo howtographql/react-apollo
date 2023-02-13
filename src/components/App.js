@@ -20,7 +20,7 @@ const App = () => (
           element={<CreateLink/>}
         />
         <Route path="/login" element={<Login/>}/>
-        <Route path="/search"element={<Search/>}/>
+        <Route path="/search" element={<Search/>}/>
         <Route path="/top" element={<LinkList/>} />
         <Route
           path="/new/:page"
